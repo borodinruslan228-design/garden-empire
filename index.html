@@ -1,0 +1,4198 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#080808" />
+    <title>Garden Empire — ваш тихий уголок</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #080808;
+        --panel: #111;
+        --panel2: #151515;
+        --line: #29251a;
+        --gold: #d4af37;
+        --gold2: #f0d77a;
+        --text: #f3f0e8;
+        --muted: #928f88;
+        --green: #89a887;
+        --red: #d27864;
+        --serif: Georgia, "Times New Roman", serif;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        margin: 0;
+        background: #080808;
+        color: var(--text);
+        font:
+          14px/1.5 Inter,
+          "Segoe UI",
+          Arial,
+          sans-serif;
+        min-height: 100vh;
+      }
+      button,
+      select {
+        font: inherit;
+      }
+      button {
+        cursor: pointer;
+        color: inherit;
+      }
+      button:disabled {
+        opacity: 0.48;
+        cursor: not-allowed;
+      }
+      ::selection {
+        background: #d4af3740;
+      }
+      .app {
+        min-height: 100vh;
+      }
+      .sidebar {
+        position: fixed;
+        inset: 0 auto 0 0;
+        width: 244px;
+        padding: 29px 19px 20px;
+        background: #0b0b0b;
+        border-right: 1px solid #1b1914;
+        display: flex;
+        flex-direction: column;
+        z-index: 5;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 0 8px 29px;
+        border-bottom: 1px solid #201e19;
+      }
+      .brand-mark {
+        width: 35px;
+        height: 35px;
+        border: 1px solid #806b29;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        color: var(--gold);
+        font-size: 18px;
+        box-shadow: 0 0 22px #d4af371c;
+      }
+      .brand-name {
+        font: 19px var(--serif);
+        letter-spacing: 1.5px;
+      }
+      .brand-sub {
+        font-size: 9px;
+        color: var(--muted);
+        letter-spacing: 2.4px;
+        margin-top: 1px;
+      }
+      .nav-label {
+        margin: 25px 10px 10px;
+        font-size: 9px;
+        text-transform: uppercase;
+        letter-spacing: 1.8px;
+        color: #77736b;
+      }
+      .nav {
+        display: grid;
+        gap: 5px;
+      }
+      .nav-btn {
+        border: 1px solid transparent;
+        background: none;
+        border-radius: 8px;
+        padding: 11px 12px;
+        text-align: left;
+        color: #aaa79f;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        transition: 0.2s;
+      }
+      .nav-btn:hover {
+        background: #171612;
+        color: #eee;
+      }
+      .nav-btn.active {
+        background: linear-gradient(100deg, #d4af3716, transparent);
+        border-color: #4c401c;
+        color: var(--gold2);
+      }
+      .nav-ico {
+        width: 18px;
+        text-align: center;
+        color: var(--gold);
+        font-size: 15px;
+      }
+      .sidebar-bottom {
+        margin-top: auto;
+      }
+      .side-note {
+        border-top: 1px solid #201e19;
+        padding: 16px 8px 0;
+        color: #77736b;
+        font-size: 11px;
+      }
+      .side-note b {
+        display: block;
+        color: #c9c3b6;
+        font: 14px var(--serif);
+        margin-bottom: 4px;
+      }
+      .main {
+        margin-left: 244px;
+        min-height: 100vh;
+      }
+      .main:after {
+        content: "";
+        position: fixed;
+        inset: 76px 0 0 244px;
+        z-index: 2;
+        pointer-events: none;
+        opacity: 0.17;
+        filter: blur(42px);
+        background:
+          radial-gradient(ellipse at 77% 24%, #d4af3740 0, transparent 35%),
+          radial-gradient(ellipse at 28% 82%, #b58d3026 0, transparent 38%),
+          radial-gradient(ellipse at 96% 75%, #d4af3724 0, transparent 31%);
+        animation: golden-mist 28s ease-in-out infinite alternate;
+      }
+      .topbar {
+        height: 76px;
+        border-bottom: 1px solid #1b1914;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 42px;
+        position: sticky;
+        top: 0;
+        background: #080808ed;
+        backdrop-filter: blur(16px);
+        z-index: 4;
+      }
+      .page-title {
+        font: 22px var(--serif);
+        letter-spacing: 0.3px;
+      }
+      .top-stats {
+        display: flex;
+        gap: 10px;
+      }
+      .stat-chip {
+        background: #111;
+        border: 1px solid #27241c;
+        border-radius: 7px;
+        padding: 7px 12px;
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        font-size: 12px;
+      }
+      .stat-chip .label {
+        color: var(--muted);
+        font-size: 10px;
+      }
+      .stat-chip strong {
+        font-weight: 600;
+      }
+      .gold {
+        color: var(--gold2);
+      }
+      .level-chip {
+        min-width: 145px;
+      }
+      .mini-progress {
+        height: 3px;
+        background: #29261e;
+        border-radius: 5px;
+        margin-top: 5px;
+        overflow: hidden;
+      }
+      .mini-progress i {
+        display: block;
+        height: 100%;
+        background: var(--gold);
+        border-radius: 5px;
+        transition: width 0.5s;
+      }
+      .content {
+        max-width: 1420px;
+        padding: 35px 42px 70px;
+        margin: auto;
+      }
+      .eyebrow {
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: var(--gold);
+        margin-bottom: 9px;
+      }
+      .heading {
+        font: 32px/1.15 var(--serif);
+        font-weight: 400;
+        margin: 0 0 9px;
+      }
+      .subheading {
+        color: var(--muted);
+        margin: 0;
+      }
+      .section-head {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 15px;
+        margin: 35px 0 16px;
+      }
+      .section-head h2 {
+        font: 23px var(--serif);
+        font-weight: 400;
+        margin: 0;
+      }
+      .section-head p {
+        margin: 5px 0 0;
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .hero {
+        position: relative;
+        overflow: hidden;
+        border: 1px solid #3d341c;
+        border-radius: 12px;
+        min-height: 196px;
+        padding: 31px 34px;
+        background:
+          radial-gradient(ellipse at 82% 50%, #d4af3713, transparent 36%),
+          linear-gradient(115deg, #14130f, #0e0e0d 70%);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .hero:after {
+        content: "✳";
+        position: absolute;
+        font-size: 210px;
+        right: 13%;
+        top: -67px;
+        color: #d4af3708;
+        pointer-events: none;
+      }
+      .hero-copy {
+        position: relative;
+        z-index: 1;
+        max-width: 530px;
+      }
+      .hero h1 {
+        font: 36px/1.12 var(--serif);
+        font-weight: 400;
+        margin: 0 0 12px;
+      }
+      .hero p {
+        margin: 0;
+        color: #aaa69c;
+        max-width: 460px;
+      }
+      .hero-meta {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        gap: 22px;
+        text-align: center;
+        padding-right: 4%;
+      }
+      .hero-meta strong {
+        display: block;
+        font: 26px var(--serif);
+        color: var(--gold2);
+      }
+      .hero-meta span {
+        font-size: 10px;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+      .plant-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(245px, 1fr));
+        gap: 16px;
+      }
+      .plant-fertilizer {
+        display: grid;
+        gap: 8px;
+        margin-top: 12px;
+        padding: 10px;
+        border: 1px solid #39311d;
+        border-radius: 9px;
+        background:
+          radial-gradient(ellipse at 100% 0%, #d4af3710, transparent 58%),
+          linear-gradient(145deg, #14130f, #0e0e0d);
+      }
+      .fertilizer-picker-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        color: #c3b98f;
+        font-size: 9px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+      }
+      .fertilizer-options {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 6px;
+      }
+      .fertilizer-option {
+        min-width: 0;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        padding: 7px 8px;
+        text-align: left;
+        border: 1px solid #302d25;
+        border-radius: 7px;
+        background: linear-gradient(145deg, #11110f, #0b0b0a);
+        transition:
+          border-color 0.2s,
+          background 0.2s,
+          box-shadow 0.2s;
+      }
+      .fertilizer-option:hover {
+        border-color: #766128;
+        background: linear-gradient(145deg, #1a1812, #10100e);
+      }
+      .fertilizer-option[aria-pressed="true"] {
+        border-color: #9c7e2b;
+        background:
+          radial-gradient(ellipse at 0 0, #d4af3718, transparent 75%),
+          #15130e;
+        box-shadow: inset 0 0 0 1px #d4af3710, 0 0 12px #d4af3710;
+      }
+      .fertilizer-option-icon {
+        flex: 0 0 auto;
+        color: var(--gold2);
+        font-size: 15px;
+        text-shadow: 0 0 10px #d4af3740;
+      }
+      .fertilizer-option-copy {
+        min-width: 0;
+        display: grid;
+        gap: 1px;
+      }
+      .fertilizer-option-name {
+        overflow: hidden;
+        color: #dedbd3;
+        font-size: 9px;
+        line-height: 1.25;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .fertilizer-option[aria-pressed="true"] .fertilizer-option-name {
+        color: var(--gold2);
+      }
+      .fertilizer-option-detail {
+        color: var(--muted);
+        font-size: 8px;
+        font-variant-numeric: tabular-nums;
+        white-space: nowrap;
+      }
+      .fertilizer-apply {
+        width: 100%;
+        min-height: 34px;
+        border-color: #665528;
+        color: #e4d59f;
+        background: #1b1912;
+      }
+      .fertilizer-apply:hover:not(:disabled) {
+        border-color: var(--gold);
+        background: #252012;
+        color: #fff0b5;
+      }
+      .fertilizer-ready {
+        color: var(--gold2);
+        font-size: 10px;
+        line-height: 1.45;
+        padding: 2px;
+      }
+      .fertilizer-stock {
+        color: var(--muted);
+        font-size: 10px;
+      }
+      .shop-card.fertilizer-shop-card .shop-meta {
+        display: grid;
+        grid-template-columns: 1fr;
+        align-items: stretch;
+        gap: 8px;
+      }
+      .fertilizer-shop-card .shop-meta label {
+        display: grid;
+        gap: 4px;
+      }
+      .fertilizer-shop-card input[type="range"] {
+        width: 100%;
+        accent-color: var(--gold);
+        cursor: pointer;
+      }
+      .fertilizer-quantity-value {
+        color: var(--gold2);
+        font-variant-numeric: tabular-nums;
+      }
+      .plant-card,
+      .panel,
+      .catalog-card,
+      .task-card,
+      .achievement-card,
+      .shop-card {
+        background: linear-gradient(145deg, #151515, #101010);
+        border: 1px solid #29261f;
+        border-radius: 10px;
+      }
+      .plant-card {
+        position: relative;
+        overflow: hidden;
+        transition:
+          border-color 0.25s,
+          transform 0.25s;
+      }
+      .plant-card:hover {
+        border-color: #665528;
+        transform: translateY(-2px);
+      }
+      .plant-card.maxed {
+        border-color: #c5a238;
+        background:
+          radial-gradient(ellipse at 50% 5%, #d4af3710, transparent 52%),
+          linear-gradient(145deg, #19170f, #10100e 65%);
+        box-shadow:
+          0 0 0 1px #d4af371b,
+          0 0 30px #d4af3720,
+          inset 0 0 24px #d4af3708;
+      }
+      .plant-card.maxed:hover {
+        border-color: #efd276;
+        box-shadow:
+          0 0 0 1px #e4c35642,
+          0 0 38px #d4af3733,
+          inset 0 0 24px #d4af370d;
+      }
+      .plant-art {
+        height: 180px;
+        background:
+          radial-gradient(ellipse at 50% 82%, #b8943420, transparent 47%),
+          linear-gradient(180deg, #171714, #121211);
+        display: grid;
+        place-items: center;
+        position: relative;
+        overflow: hidden;
+      }
+      .plant-art.maxed {
+        background:
+          radial-gradient(ellipse at 50% 53%, #d4af372b, transparent 48%),
+          radial-gradient(ellipse at 50% 100%, #d4af371b, transparent 48%),
+          linear-gradient(180deg, #1b1912, #12110e);
+      }
+      .plant-art.maxed:before {
+        content: "";
+        position: absolute;
+        left: 50%;
+        top: 48%;
+        width: 124px;
+        height: 124px;
+        border: 1px solid #e5ca704e;
+        border-radius: 50%;
+        box-shadow:
+          0 0 13px #d4af3733,
+          inset 0 0 14px #d4af3717;
+        transform: translate(-50%, -50%);
+        animation: maxed-halo 4s ease-in-out infinite;
+      }
+      .plant-art.maxed .plant-svg {
+        position: relative;
+        z-index: 1;
+        filter:
+          drop-shadow(0 0 7px #d4af3742)
+          drop-shadow(0 8px 17px #000);
+      }
+      .plant-art:after {
+        content: "";
+        position: absolute;
+        bottom: 24px;
+        width: 140px;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, #d4af3738, transparent);
+      }
+      .plant-svg {
+        width: 145px;
+        height: 158px;
+        filter: drop-shadow(0 8px 17px #000);
+        transition: transform 0.6s;
+      }
+      .plant-card:hover .plant-svg {
+        transform: translateY(-4px) scale(1.03);
+      }
+      .rarity-tag {
+        position: absolute;
+        top: 13px;
+        left: 14px;
+        font-size: 9px;
+        letter-spacing: 1.3px;
+        text-transform: uppercase;
+        color: var(--rarity, #a7ae90);
+        border: 1px solid
+          color-mix(in srgb, var(--rarity, #a7ae90) 40%, transparent);
+        border-radius: 20px;
+        padding: 4px 8px;
+        background: #09090999;
+      }
+      .max-badge {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        color: var(--gold2);
+        font-size: 8px;
+        letter-spacing: 1px;
+        border: 1px solid #d4af3766;
+        border-radius: 20px;
+        padding: 4px 7px;
+        background: #100f0bd9;
+        box-shadow: 0 0 12px #d4af3720;
+        z-index: 2;
+      }
+      .plant-card.maxed .plant-level {
+        color: var(--gold2);
+      }
+      .plant-card.maxed .bar i {
+        background: linear-gradient(90deg, #b38e2d, #f8e59a);
+        box-shadow: 0 0 8px #d4af3766;
+      }
+      .plant-card.maxed .plant-description {
+        color: #d7c78c;
+      }
+      .water-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, #cfbd8240, transparent 65%);
+        opacity: 0;
+        pointer-events: none;
+      }
+      .watering .water-overlay {
+        animation: water 1.4s ease-in-out infinite;
+      }
+      .plant-info {
+        padding: 16px;
+      }
+      .plant-title-row {
+        display: flex;
+        align-items: start;
+        justify-content: space-between;
+        gap: 8px;
+      }
+      .plant-title {
+        font: 19px var(--serif);
+        margin: 0;
+      }
+      .plant-level {
+        font-size: 10px;
+        color: var(--gold2);
+        white-space: nowrap;
+        padding-top: 3px;
+      }
+      .plant-description {
+        font-size: 11px;
+        color: var(--muted);
+        margin: 4px 0 15px;
+        min-height: 16px;
+      }
+      .growth-row {
+        display: flex;
+        justify-content: space-between;
+        font-size: 10px;
+        color: #a7a39a;
+        margin-bottom: 6px;
+      }
+      .bar {
+        height: 4px;
+        border-radius: 4px;
+        background: #292720;
+        overflow: hidden;
+      }
+      .bar i {
+        display: block;
+        height: 100%;
+        background: linear-gradient(90deg, #92752b, var(--gold2));
+        border-radius: 4px;
+        transition: width 0.5s;
+      }
+      .water-status {
+        font-size: 10px;
+        color: #aaa69c;
+        margin: 13px 0 10px;
+        min-height: 15px;
+      }
+      .water-status strong {
+        color: #ded3ae;
+        font-weight: 500;
+      }
+      .card-actions {
+        display: flex;
+        gap: 8px;
+        margin-top: 9px;
+      }
+      .btn {
+        border-radius: 6px;
+        padding: 9px 13px;
+        border: 1px solid #39352a;
+        background: #191916;
+        color: #dedbd3;
+        font-size: 11px;
+        transition: 0.2s;
+      }
+      .btn:hover:not(:disabled) {
+        border-color: #9e812d;
+        color: var(--gold2);
+        background: #201d14;
+      }
+      .btn-primary {
+        background: linear-gradient(120deg, #b39132, #d4af37);
+        color: #100e08;
+        border-color: #d4af37;
+        font-weight: 650;
+      }
+      .btn-primary:hover:not(:disabled) {
+        background: linear-gradient(120deg, #d4af37, #f0d77a);
+        color: #080808;
+        box-shadow: 0 0 20px #d4af372d;
+      }
+      .btn-block {
+        flex: 1;
+      }
+      .btn-small {
+        padding: 7px 10px;
+        font-size: 10px;
+      }
+      .panel {
+        padding: 21px;
+      }
+      .quick-grid {
+        display: grid;
+        grid-template-columns: 1.15fr 0.85fr;
+        gap: 16px;
+      }
+      .daily-banner {
+        background:
+          radial-gradient(ellipse at 90% 30%, #d4af371a, transparent 40%),
+          #13120f;
+        border-color: #44391d;
+      }
+      .daily-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+      .daily-row h3 {
+        font: 20px var(--serif);
+        font-weight: 400;
+        margin: 0 0 3px;
+      }
+      .daily-row p {
+        font-size: 11px;
+        color: var(--muted);
+        margin: 0;
+      }
+      .streak {
+        font: 21px var(--serif);
+        color: var(--gold2);
+        white-space: nowrap;
+      }
+      .toolbar {
+        display: flex;
+        gap: 9px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .select {
+        background: #111;
+        border: 1px solid #302d25;
+        border-radius: 6px;
+        color: #ccc;
+        padding: 8px 10px;
+        font-size: 11px;
+      }
+      .catalog-grid,
+      .shop-grid,
+      .task-grid,
+      .achievement-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 13px;
+      }
+      .catalog-card {
+        overflow: hidden;
+        position: relative;
+      }
+      .catalog-card.maxed {
+        border-color: #c5a238;
+        background:
+          radial-gradient(ellipse at 50% 5%, #d4af3710, transparent 52%),
+          linear-gradient(145deg, #19170f, #10100e 65%);
+        box-shadow:
+          0 0 0 1px #d4af371b,
+          0 0 24px #d4af3720,
+          inset 0 0 20px #d4af3708;
+      }
+      .catalog-card.maxed:hover {
+        border-color: #efd276;
+        box-shadow:
+          0 0 0 1px #e4c35642,
+          0 0 32px #d4af3733,
+          inset 0 0 20px #d4af370d;
+      }
+      .catalog-card.locked {
+        filter: saturate(0.35);
+      }
+      .catalog-art {
+        height: 127px;
+        display: grid;
+        place-items: center;
+        position: relative;
+        background:
+          radial-gradient(ellipse at center bottom, #d4af3716, transparent 65%),
+          #131312;
+      }
+      .catalog-art.maxed {
+        background:
+          radial-gradient(ellipse at 50% 53%, #d4af372b, transparent 48%),
+          radial-gradient(ellipse at 50% 100%, #d4af371b, transparent 48%),
+          linear-gradient(180deg, #1b1912, #12110e);
+      }
+      .catalog-art.maxed:before {
+        content: "";
+        position: absolute;
+        left: 50%;
+        top: 48%;
+        width: 98px;
+        height: 98px;
+        border: 1px solid #e5ca704e;
+        border-radius: 50%;
+        box-shadow:
+          0 0 13px #d4af3733,
+          inset 0 0 14px #d4af3717;
+        transform: translate(-50%, -50%);
+        animation: maxed-halo 4s ease-in-out infinite;
+      }
+      .catalog-art .plant-svg {
+        width: 110px;
+        height: 112px;
+        position: relative;
+        z-index: 1;
+      }
+      .catalog-art.maxed .plant-svg {
+        filter:
+          drop-shadow(0 0 7px #d4af3742)
+          drop-shadow(0 8px 17px #000);
+      }
+      .locked .catalog-art .plant-svg {
+        filter: brightness(0.25) grayscale(1);
+      }
+      .lock-mark {
+        position: absolute;
+        font-size: 19px;
+        color: #ddd;
+        background: #090909b0;
+        border: 1px solid #454137;
+        border-radius: 50%;
+        width: 34px;
+        height: 34px;
+        display: grid;
+        place-items: center;
+      }
+      .catalog-info {
+        padding: 13px;
+      }
+      .catalog-info h3 {
+        font: 17px var(--serif);
+        margin: 0 0 4px;
+      }
+      .catalog-info p {
+        font-size: 10px;
+        line-height: 1.5;
+        color: var(--muted);
+        margin: 0 0 10px;
+        min-height: 30px;
+      }
+      .catalog-foot {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 10px;
+        color: var(--gold2);
+      }
+      .rarity-text {
+        font-size: 9px;
+        color: var(--rarity, #aaa);
+        letter-spacing: 0.7px;
+      }
+      .collection-filters {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin: 18px 0;
+      }
+      .task-card,
+      .achievement-card,
+      .shop-card {
+        padding: 17px;
+        position: relative;
+      }
+      .task-card.done,
+      .achievement-card.unlocked {
+        border-color: #766127;
+        background: linear-gradient(140deg, #1c1910, #111);
+      }
+      .task-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+      }
+      .task-card h3,
+      .achievement-card h3,
+      .shop-card h3 {
+        font: 17px var(--serif);
+        font-weight: 400;
+        margin: 0 0 5px;
+      }
+      .task-card p,
+      .achievement-card p,
+      .shop-card p {
+        font-size: 11px;
+        color: var(--muted);
+        margin: 0 0 14px;
+      }
+      .reward {
+        color: var(--gold2);
+        font-size: 10px;
+        white-space: nowrap;
+      }
+      .task-foot {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 10px;
+        font-size: 10px;
+        color: #aaa;
+      }
+      .task-foot .btn {
+        margin-left: 8px;
+      }
+      .achievement-icon {
+        font-size: 22px;
+        color: var(--gold);
+        margin-bottom: 10px;
+      }
+      .achievement-progress {
+        font-size: 10px;
+        color: #aaa;
+        margin-top: 9px;
+      }
+      .shop-card .shop-symbol {
+        font-size: 28px;
+        color: var(--gold);
+        margin-bottom: 9px;
+      }
+      .shop-card .shop-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .coin-cost {
+        font-size: 11px;
+        color: var(--gold2);
+      }
+      .stat-overview {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+        margin: 20px 0;
+      }
+      .stat-box {
+        padding: 18px;
+        border: 1px solid #29261f;
+        border-radius: 8px;
+        background: #111;
+      }
+      .stat-box b {
+        display: block;
+        font: 27px var(--serif);
+        color: var(--gold2);
+      }
+      .stat-box span {
+        font-size: 10px;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+      }
+      .calendar {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 8px;
+        margin: 16px 0;
+      }
+      .day-cell {
+        aspect-ratio: 1;
+        border: 1px solid #2c2921;
+        border-radius: 7px;
+        display: grid;
+        place-items: center;
+        color: #777;
+        font-size: 10px;
+        position: relative;
+        background: #10100f;
+      }
+      .day-cell.visited {
+        color: var(--gold2);
+        border-color: #756027;
+        background: #1a170e;
+      }
+      .day-cell.today {
+        box-shadow: inset 0 0 0 1px var(--gold);
+      }
+      .day-cell i {
+        position: absolute;
+        width: 4px;
+        height: 4px;
+        border-radius: 50%;
+        bottom: 5px;
+        background: var(--gold);
+      }
+      .settings-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 0;
+        border-bottom: 1px solid #28251f;
+        color: #ccc;
+      }
+      .settings-row small {
+        display: block;
+        color: var(--muted);
+        font-size: 10px;
+      }
+      .settings-actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 9px;
+        margin-top: 18px;
+      }
+      .settings-actions .btn {
+        margin: 0;
+      }
+      .switch {
+        accent-color: var(--gold);
+        width: 16px;
+        height: 16px;
+      }
+      .empty-state {
+        padding: 38px 20px;
+        text-align: center;
+        color: var(--muted);
+        border: 1px dashed #343026;
+        border-radius: 9px;
+      }
+      .empty-state b {
+        display: block;
+        color: #d8d2c2;
+        font: 20px var(--serif);
+        margin-bottom: 5px;
+      }
+      .mobile-nav {
+        display: none;
+      }
+      .reduced-motion *,
+      .reduced-motion *:before,
+      .reduced-motion *:after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+      @keyframes water {
+        0%,
+        100% {
+          opacity: 0;
+          transform: translateY(-7%);
+        }
+        50% {
+          opacity: 0.7;
+          transform: translateY(5%);
+        }
+      }
+      @keyframes maxed-halo {
+        0%,
+        100% {
+          opacity: 0.55;
+          transform: translate(-50%, -50%) scale(0.97);
+        }
+        50% {
+          opacity: 1;
+          transform: translate(-50%, -50%) scale(1.04);
+        }
+      }
+      @keyframes level-up {
+        0% {
+          box-shadow: 0 0 0 #d4af3700;
+        }
+        40% {
+          box-shadow: 0 0 42px #d4af3760;
+        }
+        100% {
+          box-shadow: 0 0 22px #d4af3712;
+        }
+      }
+      @keyframes golden-mist {
+        from {
+          transform: translate3d(-1.5%, 0, 0) scale(1);
+        }
+        to {
+          transform: translate3d(1.5%, 1%, 0) scale(1.04);
+        }
+      }
+      .level-up {
+        animation: level-up 1.6s ease;
+      }
+      @media (max-width: 1000px) {
+        .sidebar {
+          width: 210px;
+        }
+        .main {
+          margin-left: 210px;
+        }
+        .topbar {
+          padding: 0 25px;
+        }
+        .content {
+          padding: 28px 25px 60px;
+        }
+        .hero-meta {
+          padding-right: 0;
+        }
+        .plant-grid {
+          grid-template-columns: repeat(auto-fill, minmax(225px, 1fr));
+        }
+      }
+      @media (max-width: 700px) {
+        .sidebar {
+          display: none;
+        }
+        .main {
+          margin-left: 0;
+          padding-bottom: calc(80px + env(safe-area-inset-bottom));
+        }
+        .main:after {
+          inset: 65px 0 calc(66px + env(safe-area-inset-bottom));
+        }
+        .topbar {
+          height: 65px;
+          padding: 0 15px;
+        }
+        .page-title {
+          font-size: 18px;
+        }
+        .top-stats {
+          gap: 6px;
+        }
+        .stat-chip {
+          padding: 6px 8px;
+          gap: 5px;
+        }
+        .stat-chip .label {
+          display: none;
+        }
+        .level-chip {
+          min-width: 90px;
+        }
+        .content {
+          padding: 22px 15px 38px;
+        }
+        .hero {
+          min-height: 0;
+          padding: 24px 20px;
+          display: block;
+        }
+        .hero h1 {
+          font-size: 30px;
+        }
+        .hero-meta {
+          justify-content: flex-start;
+          text-align: left;
+          margin-top: 22px;
+          gap: 23px;
+        }
+        .hero-meta strong {
+          font-size: 21px;
+        }
+        .hero-meta span {
+          font-size: 8px;
+        }
+        .heading {
+          font-size: 28px;
+        }
+        .quick-grid {
+          grid-template-columns: 1fr;
+        }
+        .section-head {
+          margin-top: 27px;
+        }
+        .plant-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        .plant-fertilizer {
+          gap: 6px;
+        }
+        .fertilizer-options {
+          display: flex;
+          overflow-x: auto;
+          margin: 0 -2px;
+          padding: 0 2px 4px;
+          scrollbar-color: #665528 #111;
+          scrollbar-width: thin;
+        }
+        .fertilizer-option {
+          flex: 0 0 112px;
+        }
+        .plant-art {
+          height: 116px;
+        }
+        .catalog-grid,
+        .shop-grid,
+        .task-grid,
+        .achievement-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 9px;
+        }
+        .catalog-info {
+          padding: 10px;
+        }
+        .catalog-info h3 {
+          font-size: 15px;
+        }
+        .catalog-info p {
+          font-size: 9px;
+          min-height: 43px;
+        }
+        .catalog-foot {
+          align-items: start;
+          gap: 4px;
+          flex-direction: column;
+        }
+        .catalog-foot .btn {
+          width: 100%;
+        }
+        .stat-overview {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .panel {
+          padding: 16px;
+        }
+        .mobile-nav {
+          display: flex;
+          position: fixed;
+          z-index: 8;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          height: calc(66px + env(safe-area-inset-bottom));
+          background: #0d0d0df5;
+          border-top: 1px solid #302b1d;
+          justify-content: space-around;
+          align-items: center;
+          padding: 0 3px env(safe-area-inset-bottom);
+        }
+        .mobile-nav button {
+          border: 0;
+          background: none;
+          color: #858178;
+          font-size: 8px;
+          display: grid;
+          justify-items: center;
+          gap: 3px;
+          padding: 5px 2px;
+          min-width: 0;
+          flex: 1;
+          white-space: nowrap;
+        }
+        .mobile-nav button span {
+          font-size: 16px;
+          color: var(--gold);
+        }
+        .mobile-nav button.active {
+          color: var(--gold2);
+        }
+        .calendar {
+          gap: 4px;
+        }
+        .day-cell {
+          font-size: 9px;
+        }
+        .task-card,
+        .achievement-card,
+        .shop-card {
+          padding: 12px;
+        }
+        .task-card h3,
+        .achievement-card h3,
+        .shop-card h3 {
+          font-size: 15px;
+        }
+        .task-card p,
+        .achievement-card p,
+        .shop-card p {
+          font-size: 9px;
+        }
+        .task-foot {
+          align-items: start;
+          flex-wrap: wrap;
+        }
+        .task-foot .btn {
+          margin: 6px 0 0;
+          width: 100%;
+        }
+      }
+      @media (max-width: 420px) {
+        .content {
+          padding-left: 12px;
+          padding-right: 12px;
+        }
+        .topbar {
+          padding-left: 11px;
+          padding-right: 11px;
+        }
+        .page-title {
+          font-size: 16px;
+        }
+        .top-stats {
+          gap: 4px;
+        }
+        .level-chip {
+          min-width: 77px;
+        }
+        .stat-chip {
+          padding: 5px 6px;
+        }
+        .catalog-grid,
+        .shop-grid,
+        .task-grid,
+        .achievement-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        .catalog-info p {
+          min-height: 0;
+        }
+        .catalog-foot {
+          align-items: center;
+          flex-direction: row;
+        }
+        .catalog-foot .btn {
+          width: auto;
+        }
+        .mobile-nav button {
+          font-size: 7px;
+          letter-spacing: -0.15px;
+        }
+        .hero {
+          padding: 21px 17px;
+        }
+        .hero h1 {
+          font-size: 27px;
+        }
+      }
+      .shop-categories {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+        margin: 23px 0 28px;
+      }
+      .shop-category {
+        display: flex;
+        align-items: center;
+        gap: 13px;
+        min-height: 78px;
+        padding: 13px 16px;
+        text-align: left;
+        border: 1px solid #302b20;
+        border-radius: 10px;
+        background: linear-gradient(145deg, #151513, #10100f);
+        color: #aaa69c;
+        transition:
+          border-color 0.2s,
+          background 0.2s,
+          transform 0.2s;
+      }
+      .shop-category:hover {
+        border-color: #67552b;
+        transform: translateY(-2px);
+      }
+      .shop-category.active {
+        border-color: #806b34;
+        background: linear-gradient(120deg, #d4af3718, #14130f);
+        color: var(--text);
+        box-shadow: 0 0 22px #d4af370b;
+      }
+      .shop-category-icon {
+        width: 38px;
+        height: 38px;
+        flex: 0 0 38px;
+        border: 1px solid #544626;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        font-size: 18px;
+        color: var(--gold2);
+      }
+      .shop-category-copy {
+        display: grid;
+        gap: 2px;
+      }
+      .shop-category-copy strong {
+        font: 17px var(--serif);
+        font-weight: 400;
+        color: #e9e4d9;
+      }
+      .shop-category-copy small {
+        font-size: 10px;
+        color: var(--muted);
+      }
+      .shop-category-count {
+        margin-left: auto;
+        align-self: start;
+        padding: 2px 7px;
+        border: 1px solid #393328;
+        border-radius: 20px;
+        color: var(--gold2);
+        font-size: 10px;
+      }
+      .shop-results-head {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 12px;
+        margin: 0 0 14px;
+      }
+      .shop-results-head h2 {
+        font: 23px var(--serif);
+        font-weight: 400;
+        margin: 0;
+      }
+      .shop-results-head p {
+        font-size: 11px;
+        color: var(--muted);
+        margin: 4px 0 0;
+      }
+      @media (max-width: 700px) {
+        .shop-categories {
+          display: flex;
+          gap: 8px;
+          margin: 19px -15px 23px;
+          padding: 0 15px 4px;
+          overflow-x: auto;
+          overscroll-behavior-x: contain;
+          scrollbar-width: none;
+          scroll-snap-type: x mandatory;
+        }
+        .shop-categories::-webkit-scrollbar {
+          display: none;
+        }
+        .shop-category {
+          flex: 0 0 150px;
+          min-height: 68px;
+          padding: 10px;
+          border-radius: 12px;
+          scroll-snap-align: start;
+        }
+        .shop-category-icon {
+          width: 34px;
+          height: 34px;
+          flex-basis: 34px;
+        }
+        .shop-category-copy strong {
+          font-size: 15px;
+        }
+        .shop-category-copy small {
+          font-size: 9px;
+        }
+        .shop-category-count {
+          padding: 1px 6px;
+        }
+        .shop-results-head {
+          align-items: center;
+          margin-bottom: 12px;
+        }
+        .shop-results-head h2 {
+          font-size: 21px;
+        }
+        .shop-results-head p {
+          font-size: 10px;
+        }
+      }
+      @media (max-width: 420px) {
+        .shop-categories {
+          margin-left: -12px;
+          margin-right: -12px;
+          padding-left: 12px;
+          padding-right: 12px;
+        }
+        .shop-category {
+          flex-basis: 138px;
+        }
+      }
+      @keyframes mobile-arrive {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @media (max-width: 700px) {
+        .main {
+          padding-bottom: calc(104px + env(safe-area-inset-bottom));
+        }
+        .main:after {
+          inset: 65px 0 calc(88px + env(safe-area-inset-bottom));
+        }
+        .content {
+          padding: 19px 15px 30px;
+        }
+        .content > .hero,
+        .content > .eyebrow,
+        .content > .heading,
+        .content > .subheading,
+        .content > .section-head,
+        .content > .plant-grid,
+        .content > .quick-grid,
+        .content > .collection-filters,
+        .content > .catalog-grid,
+        .content > .shop-grid,
+        .content > .task-grid,
+        .content > .achievement-grid,
+        .content > .stat-overview,
+        .content > .panel {
+          animation: mobile-arrive 0.42s both;
+        }
+        .content > .hero {
+          border-radius: 16px;
+          padding: 23px 19px;
+          box-shadow:
+            0 12px 30px #0005,
+            inset 0 1px #ffffff08;
+        }
+        .content > .section-head {
+          align-items: center;
+          margin: 27px 0 13px;
+        }
+        .content > .section-head h2 {
+          font-size: 21px;
+        }
+        .content > .section-head p {
+          font-size: 11px;
+          line-height: 1.45;
+        }
+        .content > .section-head > .btn {
+          flex: 0 0 auto;
+        }
+        .plant-grid {
+          gap: 10px;
+        }
+        .plant-card,
+        .panel,
+        .catalog-card,
+        .task-card,
+        .achievement-card,
+        .shop-card {
+          border-radius: 14px;
+          box-shadow:
+            0 9px 24px #0004,
+            inset 0 1px #ffffff07;
+        }
+        .plant-card {
+          animation: mobile-arrive 0.4s both;
+        }
+        .plant-card:nth-child(2) {
+          animation-delay: 0.04s;
+        }
+        .plant-card:nth-child(3) {
+          animation-delay: 0.08s;
+        }
+        .plant-card:nth-child(4) {
+          animation-delay: 0.12s;
+        }
+        .plant-card:hover {
+          transform: none;
+        }
+        .plant-art {
+          height: 116px;
+          border-radius: 13px 13px 0 0;
+        }
+        .plant-info {
+          padding: 10px;
+        }
+        .plant-title {
+          font-size: 15px;
+          line-height: 1.2;
+        }
+        .plant-title-row {
+          display: grid;
+          gap: 4px;
+        }
+        .plant-level {
+          font-size: 8px;
+        }
+        .plant-description {
+          display: none;
+        }
+        .growth-row {
+          gap: 3px;
+          flex-wrap: wrap;
+          font-size: 9px;
+          line-height: 1.3;
+          margin: 9px 0 5px;
+        }
+        .water-status {
+          font-size: 9px;
+          line-height: 1.35;
+          margin: 9px 0 7px;
+          min-height: 25px;
+        }
+        .bar {
+          height: 4px;
+        }
+        .plant-svg {
+          width: 100px;
+          height: 108px;
+        }
+        .plant-art .rarity-tag {
+          top: 7px;
+          left: 7px;
+          padding: 3px 6px;
+          font-size: 7px;
+          letter-spacing: 0.7px;
+        }
+        .max-badge {
+          top: 7px;
+          right: 6px;
+          font-size: 6px;
+          letter-spacing: 0.3px;
+        }
+        .plant-card .btn {
+          width: 100%;
+          min-height: 36px;
+        }
+        .btn {
+          min-height: 42px;
+          padding: 10px 13px;
+          border-radius: 9px;
+          font-size: 12px;
+        }
+        .btn-small {
+          min-height: 38px;
+          padding: 8px 11px;
+          font-size: 11px;
+        }
+        .stat-overview {
+          gap: 9px;
+        }
+        .stat-box {
+          padding: 15px 13px;
+          border-radius: 12px;
+        }
+        .stat-box b {
+          font-size: 25px;
+        }
+        .stat-box span {
+          font-size: 9px;
+          line-height: 1.35;
+        }
+        .panel {
+          padding: 17px;
+          border-radius: 14px;
+        }
+        .quick-grid {
+          gap: 11px;
+        }
+        .daily-banner {
+          padding: 17px;
+        }
+        .catalog-grid,
+        .shop-grid,
+        .task-grid,
+        .achievement-grid {
+          gap: 11px;
+        }
+        .catalog-card,
+        .shop-card,
+        .task-card,
+        .achievement-card {
+          overflow: hidden;
+        }
+        .catalog-card,
+        .shop-card,
+        .task-card,
+        .achievement-card {
+          border-radius: 11px;
+          box-shadow: 0 5px 15px #0003;
+        }
+        .catalog-art {
+          height: 96px;
+        }
+        .catalog-art .plant-svg {
+          width: 88px;
+          height: 90px;
+        }
+        .catalog-info {
+          padding: 8px;
+        }
+        .catalog-info h3,
+        .shop-card h3,
+        .task-card h3,
+        .achievement-card h3 {
+          font-size: 14px;
+          line-height: 1.25;
+        }
+        .catalog-info p {
+          min-height: 38px;
+          margin-bottom: 8px;
+          font-size: 9px;
+        }
+        .catalog-foot {
+          gap: 6px;
+        }
+        .shop-card,
+        .task-card,
+        .achievement-card {
+          padding: 10px;
+        }
+        .shop-card .shop-symbol,
+        .achievement-icon {
+          margin-bottom: 5px;
+          font-size: 21px;
+        }
+        .task-card p,
+        .achievement-card p,
+        .shop-card p {
+          margin-bottom: 9px;
+          font-size: 9px;
+          line-height: 1.4;
+        }
+        .task-foot {
+          align-items: center;
+          flex-wrap: nowrap;
+          margin-top: 7px;
+        }
+        .task-foot .btn {
+          flex: 0 0 auto;
+          width: auto;
+          min-height: 32px;
+          margin: 0 0 0 4px;
+          padding: 6px 8px;
+          font-size: 9px;
+        }
+        .achievement-progress {
+          margin-top: 7px;
+          font-size: 9px;
+          line-height: 1.35;
+        }
+        .shop-card .shop-meta {
+          gap: 5px;
+        }
+        .coin-cost {
+          font-size: 10px;
+        }
+        .task-card p,
+        .achievement-card p,
+        .shop-card p {
+          font-size: 9px;
+          line-height: 1.4;
+        }
+        .mobile-nav {
+          display: flex;
+          position: fixed;
+          z-index: 8;
+          left: 10px;
+          right: 10px;
+          bottom: calc(8px + env(safe-area-inset-bottom));
+          height: 66px;
+          padding: 5px 8px;
+          border: 1px solid #4b3b1d;
+          border-radius: 17px;
+          background: #10100ff2;
+          backdrop-filter: blur(18px);
+          box-shadow:
+            0 8px 32px #000b,
+            0 0 22px #d4af370d;
+          justify-content: flex-start;
+          align-items: center;
+          gap: 4px;
+          overflow-x: auto;
+          overscroll-behavior-x: contain;
+          scrollbar-width: none;
+          scroll-snap-type: x mandatory;
+        }
+        .mobile-nav::-webkit-scrollbar {
+          display: none;
+        }
+        .mobile-nav button {
+          position: relative;
+          flex: 0 0 61px;
+          min-width: 61px;
+          height: 52px;
+          padding: 5px 2px;
+          border: 1px solid transparent;
+          border-radius: 12px;
+          background: transparent;
+          color: #8d887d;
+          font-size: 9px;
+          display: grid;
+          align-content: center;
+          justify-items: center;
+          gap: 2px;
+          white-space: nowrap;
+          scroll-snap-align: center;
+          transition:
+            background 0.22s,
+            border-color 0.22s,
+            color 0.22s,
+            transform 0.18s;
+        }
+        .mobile-nav button span {
+          font-size: 17px;
+          line-height: 20px;
+          color: #b0924a;
+          transition:
+            transform 0.22s,
+            color 0.22s;
+        }
+        .mobile-nav button.active {
+          color: var(--gold2);
+          background: linear-gradient(150deg, #d4af371b, #d4af3708);
+          border-color: #80682d;
+        }
+        .mobile-nav button.active span {
+          color: var(--gold2);
+          transform: translateY(-1px);
+        }
+        .mobile-nav button:active {
+          transform: scale(0.94);
+        }
+        .settings-row {
+          gap: 12px;
+          align-items: center;
+        }
+        .settings-actions {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        .settings-actions .btn {
+          width: 100%;
+          text-align: center;
+        }
+        .settings-row > span:first-child {
+          min-width: 0;
+        }
+        .settings-row small {
+          line-height: 1.45;
+        }
+        .select {
+          min-height: 40px;
+          border-radius: 9px;
+          font-size: 12px;
+        }
+        .day-cell {
+          border-radius: 9px;
+        }
+      }
+      @media (max-width: 420px) {
+        .content {
+          padding-left: 12px;
+          padding-right: 12px;
+        }
+        .topbar {
+          padding-left: 11px;
+          padding-right: 11px;
+        }
+        .mobile-nav {
+          left: 8px;
+          right: 8px;
+          padding-left: 6px;
+          padding-right: 6px;
+        }
+        .mobile-nav button {
+          flex-basis: 58px;
+          min-width: 58px;
+        }
+        .hero-meta {
+          gap: 19px;
+        }
+        .daily-row {
+          gap: 8px;
+        }
+      }
+      @media (min-width: 521px) and (max-width: 700px) {
+        .plant-grid {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          gap: 9px;
+        }
+        .plant-art {
+          height: 104px;
+        }
+        .plant-svg {
+          width: 90px;
+          height: 98px;
+        }
+        .plant-info {
+          padding: 9px;
+        }
+      }
+      @media (max-width: 360px) {
+        .plant-grid {
+          gap: 8px;
+        }
+        .plant-info {
+          padding: 8px;
+        }
+        .plant-title {
+          font-size: 14px;
+        }
+        .plant-level {
+          font-size: 7px;
+        }
+      }
+      @media (min-width: 701px) and (max-width: 900px) {
+        .hero-meta {
+          display: none;
+        }
+        .stat-overview {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app" id="app"></div>
+    <script>
+      (() => {
+        "use strict";
+        const SAVE_KEY = "gardenEmpireSave_v1";
+        const MAX_LEVEL = 10;
+        const RARITIES = {
+          Обычное: "#91a985",
+          Необычное: "#79b9a6",
+          Редкое: "#87a8d7",
+          Эпическое: "#bd8bd4",
+          Легендарное: "#dfbd5a",
+          Мифическое: "#ec9a84",
+        };
+        const SPECIES = [
+          {
+            id: "sprout",
+            name: "Маленький росток",
+            rarity: "Обычное",
+            cost: 0,
+            level: 1,
+            water: 30,
+            xp: 24,
+            shape: "sprout",
+            color: "#89a887",
+            desc: "Начало большой и красивой истории.",
+            starter: true,
+          },
+          {
+            id: "cactus",
+            name: "Пустынный кактус",
+            rarity: "Обычное",
+            cost: 90,
+            level: 1,
+            water: 45,
+            xp: 30,
+            shape: "cactus",
+            color: "#82a478",
+            desc: "Тихий житель солнечных песков.",
+          },
+          {
+            id: "daisy",
+            name: "Белая ромашка",
+            rarity: "Обычное",
+            cost: 130,
+            level: 1,
+            water: 55,
+            xp: 34,
+            shape: "flower",
+            color: "#a3b888",
+            desc: "Светлый цветок для спокойного сада.",
+          },
+          {
+            id: "lavender",
+            name: "Лавандовый куст",
+            rarity: "Необычное",
+            cost: 280,
+            level: 2,
+            water: 90,
+            xp: 48,
+            shape: "lavender",
+            color: "#9a87bb",
+            desc: "Нежный аромат и прохладные оттенки.",
+          },
+          {
+            id: "monstera",
+            name: "Монстера",
+            rarity: "Необычное",
+            cost: 360,
+            level: 3,
+            water: 100,
+            xp: 54,
+            shape: "monstera",
+            color: "#75a883",
+            desc: "Графичные листья с природным узором.",
+          },
+          {
+            id: "bonsai",
+            name: "Старый бонсай",
+            rarity: "Необычное",
+            cost: 480,
+            level: 3,
+            water: 120,
+            xp: 62,
+            shape: "bonsai",
+            color: "#84a174",
+            desc: "Миниатюрное дерево, полное характера.",
+          },
+          {
+            id: "orchid",
+            name: "Лунная орхидея",
+            rarity: "Редкое",
+            cost: 700,
+            level: 4,
+            water: 150,
+            xp: 78,
+            shape: "orchid",
+            color: "#c193c7",
+            desc: "Редкий цветок с мягким сиянием.",
+            achievement: "firstLevel",
+          },
+          {
+            id: "olive",
+            name: "Оливковое дерево",
+            rarity: "Редкое",
+            cost: 900,
+            level: 4,
+            water: 180,
+            xp: 90,
+            shape: "olive",
+            color: "#9ba879",
+            desc: "Серебристая листва Средиземноморья.",
+          },
+          {
+            id: "sakura",
+            name: "Сакура",
+            rarity: "Редкое",
+            cost: 1100,
+            level: 5,
+            water: 210,
+            xp: 102,
+            shape: "sakura",
+            color: "#d98eaa",
+            desc: "Весеннее цветение в каждом силуэте.",
+            achievement: "fivePlants",
+          },
+          {
+            id: "crystal",
+            name: "Кристальное дерево",
+            rarity: "Эпическое",
+            cost: 1600,
+            level: 6,
+            water: 270,
+            xp: 132,
+            shape: "crystal",
+            color: "#78c4c9",
+            desc: "Грани ловят свет даже в сумерках.",
+            achievement: "fivePlants",
+          },
+          {
+            id: "goldmaple",
+            name: "Золотой клён",
+            rarity: "Эпическое",
+            cost: 2000,
+            level: 6,
+            water: 300,
+            xp: 148,
+            shape: "maple",
+            color: "#d3a84e",
+            desc: "Осень, которая никогда не кончается.",
+            achievement: "fivePlants",
+          },
+          {
+            id: "moonflower",
+            name: "Лунный цветок",
+            rarity: "Легендарное",
+            cost: 2800,
+            level: 7,
+            water: 360,
+            xp: 172,
+            shape: "moon",
+            color: "#c0abeb",
+            desc: "Раскрывается под серебряным светом.",
+            achievement: "rarePlant",
+          },
+          {
+            id: "wisteria",
+            name: "Сумеречная глициния",
+            rarity: "Легендарное",
+            cost: 3400,
+            level: 8,
+            water: 420,
+            xp: 198,
+            shape: "wisteria",
+            color: "#ae91cd",
+            desc: "Каскады цветов в цвете позднего неба.",
+            achievement: "sevenDays",
+          },
+          {
+            id: "eternal",
+            name: "Древо вечности",
+            rarity: "Мифическое",
+            cost: 5000,
+            level: 9,
+            water: 540,
+            xp: 240,
+            shape: "eternal",
+            color: "#e0bf63",
+            desc: "Единственное в своём роде золотое древо.",
+            achievement: "legendary",
+          },
+          {
+            id: "nebula",
+            name: "Туманная камелия",
+            rarity: "Мифическое",
+            cost: 6500,
+            level: 10,
+            water: 600,
+            xp: 280,
+            shape: "nebula",
+            color: "#e59cae",
+            desc: "Цветок, будто созданный из далёких звёзд.",
+            achievement: "legendary",
+          },
+        ];
+        const LEGACY_SPECIES = [
+          {
+            id: "fern",
+            name: "Папоротник",
+            rarity: "Обычное",
+            cost: 180,
+            level: 2,
+            water: 60,
+            xp: 38,
+            shape: "fern",
+            color: "#72a080",
+            desc: "Изящная зелень с ажурными листьями.",
+          },
+        ];
+        const POTS = [
+          {
+            id: "stone",
+            name: "Каменный сосуд",
+            cost: 220,
+            icon: "◒",
+            desc: "Матовый графит и природная фактура.",
+          },
+          {
+            id: "porcelain",
+            name: "Золотой фарфор",
+            cost: 650,
+            icon: "◉",
+            desc: "Фарфор с тонкой золотой каймой.",
+          },
+          {
+            id: "moonpot",
+            name: "Лунная керамика",
+            cost: 1200,
+            icon: "◌",
+            desc: "Редкая глазурь с перламутровым отливом.",
+          },
+          {
+            id: "jade",
+            name: "Нефритовая чаша",
+            cost: 1800,
+            icon: "❈",
+            desc: "Глубокий нефритовый оттенок и резной орнамент.",
+          },
+          {
+            id: "obsidian",
+            name: "Обсидиановый вазон",
+            cost: 2600,
+            icon: "⬟",
+            desc: "Строгий тёмный силуэт с тонкими золотыми гранями.",
+          },
+          {
+            id: "imperial",
+            name: "Императорский горшок",
+            cost: 4200,
+            icon: "♕",
+            desc: "Парадный сосуд с рельефным золотым узором.",
+          },
+        ];
+        const FERTILIZERS = [
+          {
+            id: "compost",
+            name: "Мягкий компост",
+            cost: 55,
+            level: 1,
+            reduction: 15,
+            icon: "❋",
+            desc: "Бережно ускоряет следующий полив на 15%.",
+          },
+          {
+            id: "leafmeal",
+            name: "Листовая подкормка",
+            cost: 100,
+            level: 2,
+            reduction: 25,
+            icon: "❧",
+            desc: "Питательная смесь сокращает время на 25%.",
+          },
+          {
+            id: "roottonic",
+            name: "Тоник корней",
+            cost: 210,
+            level: 4,
+            reduction: 35,
+            icon: "♧",
+            desc: "Укрепляет корни и ускоряет полив на 35%.",
+          },
+          {
+            id: "moonbrew",
+            name: "Лунный настой",
+            cost: 390,
+            level: 6,
+            reduction: 45,
+            icon: "☾",
+            desc: "Редкий настой уменьшает ожидание на 45%.",
+          },
+          {
+            id: "goldenpollen",
+            name: "Золотая пыльца",
+            cost: 700,
+            level: 8,
+            reduction: 55,
+            icon: "✧",
+            desc: "Драгоценная подкормка ускоряет полив на 55%.",
+          },
+          {
+            id: "eternalelixir",
+            name: "Эликсир вечности",
+            cost: 1200,
+            level: 10,
+            reduction: 65,
+            icon: "✦",
+            desc: "Легендарный состав сокращает время на 65%.",
+          },
+        ];
+        const ACHIEVEMENTS = [
+          {
+            id: "firstPlant",
+            name: "Первое растение",
+            desc: "Откройте своё первое растение.",
+            icon: "♧",
+            goal: 1,
+            reward: 60,
+            stat: "plants",
+          },
+          {
+            id: "firstWater",
+            name: "Первый полив",
+            desc: "Завершите первый уход.",
+            icon: "滴",
+            goal: 1,
+            reward: 70,
+            stat: "waters",
+          },
+          {
+            id: "firstLevel",
+            name: "Новый уровень",
+            desc: "Вырастите любое растение до 2 уровня.",
+            icon: "✦",
+            goal: 1,
+            reward: 100,
+            stat: "levelUps",
+          },
+          {
+            id: "fivePlants",
+            name: "Коллекционер",
+            desc: "Откройте 5 разных видов.",
+            icon: "❋",
+            goal: 5,
+            reward: 220,
+            stat: "plants",
+          },
+          {
+            id: "tenPlants",
+            name: "Редкий гербарий",
+            desc: "Откройте 10 разных видов.",
+            icon: "✿",
+            goal: 10,
+            reward: 450,
+            stat: "plants",
+          },
+          {
+            id: "rarePlant",
+            name: "Редкая находка",
+            desc: "Откройте первое редкое растение.",
+            icon: "❀",
+            goal: 1,
+            reward: 250,
+            stat: "rarePlants",
+          },
+          {
+            id: "legendary",
+            name: "Золотая легенда",
+            desc: "Откройте легендарное растение.",
+            icon: "✧",
+            goal: 1,
+            reward: 500,
+            stat: "legendaryPlants",
+          },
+          {
+            id: "sevenDays",
+            name: "Неделя в саду",
+            desc: "Посетите сад в 7 разных дней или полностью вырастите коллекцию.",
+            icon: "☼",
+            goal: 7,
+            reward: 300,
+            stat: "days",
+          },
+          {
+            id: "levelTen",
+            name: "Мастер садоводства",
+            desc: "Вырастите растение до максимума.",
+            icon: "♕",
+            goal: 1,
+            reward: 500,
+            stat: "maxed",
+          },
+          {
+            id: "tenWaters",
+            name: "Заботливые руки",
+            desc: "Завершите 10 поливов.",
+            icon: "❋",
+            goal: 10,
+            reward: 180,
+            stat: "waters",
+          },
+          {
+            id: "steadyHands",
+            name: "Уверенная рука",
+            desc: "Завершите 25 поливов.",
+            icon: "♧",
+            goal: 25,
+            reward: 220,
+            stat: "waters",
+          },
+          {
+            id: "gardenRitual",
+            name: "Садовый ритуал",
+            desc: "Завершите 50 поливов.",
+            icon: "❋",
+            goal: 50,
+            reward: 350,
+            stat: "waters",
+          },
+          {
+            id: "waterMaster",
+            name: "Мастер полива",
+            desc: "Завершите 100 поливов.",
+            icon: "♒",
+            goal: 100,
+            reward: 600,
+            stat: "waters",
+          },
+          {
+            id: "gardenKeeper",
+            name: "Хранитель сада",
+            desc: "Откройте 3 разных растения.",
+            icon: "❀",
+            goal: 3,
+            reward: 100,
+            stat: "plants",
+          },
+          {
+            id: "botanicalCollector",
+            name: "Ботанический архив",
+            desc: "Откройте 8 разных растений.",
+            icon: "✿",
+            goal: 8,
+            reward: 320,
+            stat: "plants",
+          },
+          {
+            id: "largeCollection",
+            name: "Большая коллекция",
+            desc: "Откройте 12 разных растений.",
+            icon: "❋",
+            goal: 12,
+            reward: 500,
+            stat: "plants",
+          },
+          {
+            id: "nearCompleteCollection",
+            name: "Почти полный гербарий",
+            desc: "Откройте 14 разных растений.",
+            icon: "✿",
+            goal: 14,
+            reward: 700,
+            stat: "plants",
+          },
+          {
+            id: "allSpecies",
+            name: "Полный гербарий",
+            desc: "Откройте каждый вид растения.",
+            icon: "♕",
+            goal: 1,
+            reward: 1000,
+            stat: "fullCollection",
+          },
+          {
+            id: "greenhouse",
+            name: "Своя оранжерея",
+            desc: "Доведите сумму уровней растений до 50.",
+            icon: "♧",
+            goal: 50,
+            reward: 250,
+            stat: "plantLevels",
+          },
+          {
+            id: "botanicalExpert",
+            name: "Знаток ботаники",
+            desc: "Доведите сумму уровней растений до 100.",
+            icon: "✦",
+            goal: 100,
+            reward: 450,
+            stat: "plantLevels",
+          },
+          {
+            id: "livingEmpire",
+            name: "Живая империя",
+            desc: "Доведите сумму уровней растений до 150.",
+            icon: "♕",
+            goal: 150,
+            reward: 700,
+            stat: "plantLevels",
+          },
+          {
+            id: "threeMasters",
+            name: "Три шедевра",
+            desc: "Вырастите до максимума 3 растения.",
+            icon: "✧",
+            goal: 3,
+            reward: 350,
+            stat: "maxed",
+          },
+          {
+            id: "fiveMasters",
+            name: "Галерея совершенства",
+            desc: "Вырастите до максимума 5 растений.",
+            icon: "❋",
+            goal: 5,
+            reward: 500,
+            stat: "maxed",
+          },
+          {
+            id: "tenMasters",
+            name: "Сад выдающихся форм",
+            desc: "Вырастите до максимума 10 растений.",
+            icon: "✿",
+            goal: 10,
+            reward: 750,
+            stat: "maxed",
+          },
+          {
+            id: "fifteenMasters",
+            name: "Совершенная коллекция",
+            desc: "Вырастите до максимума все 15 растений.",
+            icon: "♕",
+            goal: 15,
+            reward: 1200,
+            stat: "maxed",
+          },
+          {
+            id: "accountLevelFive",
+            name: "Опытный садовод",
+            desc: "Достигните 5 уровня аккаунта.",
+            icon: "✦",
+            goal: 5,
+            reward: 300,
+            stat: "accountLevel",
+          },
+          {
+            id: "accountLevelTen",
+            name: "Великий садовод",
+            desc: "Достигните 10 уровня аккаунта.",
+            icon: "♕",
+            goal: 10,
+            reward: 800,
+            stat: "accountLevel",
+          },
+          {
+            id: "threeRare",
+            name: "Охотник за редкостями",
+            desc: "Откройте 3 редких или более ценных растения.",
+            icon: "❀",
+            goal: 3,
+            reward: 350,
+            stat: "rarePlants",
+          },
+          {
+            id: "sixRare",
+            name: "Редкий гербарий",
+            desc: "Откройте 6 редких или более ценных растений.",
+            icon: "✧",
+            goal: 6,
+            reward: 600,
+            stat: "rarePlants",
+          },
+          {
+            id: "mythicPair",
+            name: "Две легенды",
+            desc: "Откройте оба мифических растения.",
+            icon: "✧",
+            goal: 2,
+            reward: 800,
+            stat: "mythicPlants",
+          },
+          {
+            id: "uncommonSet",
+            name: "Декоративная зелень",
+            desc: "Соберите все необычные растения.",
+            icon: "❋",
+            goal: 3,
+            reward: 300,
+            stat: "uncommonPlants",
+          },
+          {
+            id: "commonSet",
+            name: "Корни сада",
+            desc: "Соберите все обычные растения.",
+            icon: "♧",
+            goal: 3,
+            reward: 180,
+            stat: "commonPlants",
+          },
+          {
+            id: "rareSet",
+            name: "Созвездие редкостей",
+            desc: "Соберите все редкие растения.",
+            icon: "✿",
+            goal: 3,
+            reward: 450,
+            stat: "exactRarePlants",
+          },
+          {
+            id: "epicSet",
+            name: "Эпическая пара",
+            desc: "Соберите оба эпических растения.",
+            icon: "✧",
+            goal: 2,
+            reward: 500,
+            stat: "epicPlants",
+          },
+          {
+            id: "legendarySet",
+            name: "Золотая коллекция",
+            desc: "Соберите оба легендарных растения.",
+            icon: "♕",
+            goal: 2,
+            reward: 650,
+            stat: "exactLegendaryPlants",
+          },
+          {
+            id: "perfectGarden",
+            name: "Империя в цвету",
+            desc: "Откройте все растения и доведите каждое до 10 уровня.",
+            icon: "♕",
+            goal: 1,
+            reward: 2000,
+            stat: "perfectGarden",
+          },
+        ];
+        const DAILY_TEMPLATES = [
+          {
+            id: "water2",
+            name: "Мягкая забота",
+            desc: "Завершите полив 2 растений.",
+            goal: 2,
+            reward: 65,
+            stat: "watersToday",
+          },
+          {
+            id: "exp80",
+            name: "Зелёный рост",
+            desc: "Получите 80 опыта за уход.",
+            goal: 80,
+            reward: 75,
+            stat: "xpToday",
+          },
+          {
+            id: "levelup",
+            name: "Новый лист",
+            desc: "Повысите уровень любого растения.",
+            goal: 1,
+            reward: 90,
+            stat: "levelsToday",
+          },
+          {
+            id: "visit",
+            name: "Вернуться в сад",
+            desc: "Заберите ежедневный подарок.",
+            goal: 1,
+            reward: 50,
+            stat: "login",
+          },
+          {
+            id: "water3",
+            name: "Тихий ритуал",
+            desc: "Завершите 3 полива.",
+            goal: 3,
+            reward: 110,
+            stat: "watersToday",
+          },
+        ];
+        const todayKey = () => {
+          const d = new Date();
+          return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+        };
+        const freshState = () => ({
+          version: 1,
+          coins: 160,
+          accountXp: 0,
+          accountLevel: 1,
+          plants: {
+            sprout: {
+              level: 1,
+              xp: 0,
+              watering: null,
+              maxRewarded: false,
+              pot: "default",
+              fertilizer: null,
+            },
+          },
+          owned: ["sprout"],
+          unlockedPots: ["default"],
+          equippedPot: "default",
+          decor: [],
+          fertilizers: Object.fromEntries(
+            FERTILIZERS.map((fertilizer) => [fertilizer.id, 0]),
+          ),
+          stats: {
+            waters: 0,
+            levelUps: 0,
+            maxed: 0,
+            rarePlants: 0,
+            legendaryPlants: 0,
+            days: 0,
+            visitedDates: [],
+            opened: 1,
+            playTimeMs: 0,
+          },
+          achievements: [],
+          claimedAchievements: [],
+          daily: {
+            date: todayKey(),
+            progress: {},
+            claimed: [],
+            loginClaimed: false,
+          },
+          streak: 0,
+          lastVisit: null,
+          settings: { reducedMotion: false, compact: false },
+        });
+        function normalizeState(parsed) {
+          const defaults = freshState();
+          const normalized = {
+            ...defaults,
+            ...parsed,
+            plants: { ...defaults.plants, ...parsed.plants },
+            fertilizers: { ...defaults.fertilizers, ...parsed.fertilizers },
+            claimedAchievements: Array.isArray(parsed.claimedAchievements)
+              ? parsed.claimedAchievements
+              : Array.isArray(parsed.achievements)
+                ? [...parsed.achievements]
+                : [],
+            stats: { ...defaults.stats, ...parsed.stats },
+            settings: { ...defaults.settings, ...parsed.settings },
+            daily: { ...defaults.daily, ...parsed.daily },
+          };
+          for (const plant of Object.values(normalized.plants)) {
+            plant.fertilizer = FERTILIZERS.some(
+              (fertilizer) => fertilizer.id === plant.fertilizer,
+            )
+              ? plant.fertilizer
+              : null;
+          }
+          for (const fertilizer of FERTILIZERS) {
+            normalized.fertilizers[fertilizer.id] = Math.max(
+              0,
+              Math.floor(Number(normalized.fertilizers[fertilizer.id]) || 0),
+            );
+          }
+          return normalized;
+        }
+        let state,
+          playSessionStartedAt = null;
+        let currentPage = "garden",
+          shopCategory = "plants",
+          filterRarity = "Все редкости",
+          filterStatus = "Все",
+          filterLevel = "Любой уровень",
+          toastErrorShown = false;
+        const app = document.getElementById("app");
+        const speciesById = (id) =>
+          SPECIES.find((s) => s.id === id) ||
+          LEGACY_SPECIES.find((s) => s.id === id);
+        const ownedSpeciesCount = () =>
+          SPECIES.reduce(
+            (count, species) => count + Number(state.owned.includes(species.id)),
+            0,
+          );
+        const xpNeeded = (level) => Math.round(55 + level * level * 13);
+        const fmtTime = (seconds) => {
+          seconds = Math.max(0, Math.ceil(seconds));
+          if (seconds < 60) return `${seconds} сек`;
+          if (seconds < 3600)
+            return `${Math.floor(seconds / 60)} мин ${seconds % 60 ? `${seconds % 60} сек` : ""}`.trim();
+          const h = Math.floor(seconds / 3600),
+            m = Math.floor((seconds % 3600) / 60);
+          return `${h} ч ${m ? `${m} мин` : ""}`.trim();
+        };
+        const formatCoins = (n) => new Intl.NumberFormat("ru-RU").format(n);
+        function loadState() {
+          try {
+            const raw = localStorage.getItem(SAVE_KEY);
+            if (!raw) return freshState();
+            const parsed = JSON.parse(raw);
+            if (
+              !parsed ||
+              parsed.version !== 1 ||
+              !parsed.plants ||
+              !Array.isArray(parsed.owned)
+            )
+              throw new Error("Файл сохранения имеет неизвестный формат.");
+            return normalizeState(parsed);
+          } catch (error) {
+            console.error(
+              "Не удалось загрузить сохранение Garden Empire:",
+              error,
+            );
+            setTimeout(
+              () =>
+                toast(
+                  "Сохранение недоступно",
+                  "Начата новая игра; проверьте настройки хранилища браузера.",
+                ),
+              100,
+            );
+            return freshState();
+          }
+        }
+        function save() {
+          try {
+            localStorage.setItem(SAVE_KEY, JSON.stringify(state));
+            toastErrorShown = false;
+          } catch (error) {
+            console.error("Не удалось сохранить Garden Empire:", error);
+            if (!toastErrorShown) {
+              toast(
+                "Не удалось сохранить прогресс",
+                "Проверьте доступное место и настройки хранилища браузера.",
+              );
+              toastErrorShown = true;
+            }
+          }
+        }
+        function flushPlayTime() {
+          if (playSessionStartedAt === null) return;
+          const now = Date.now();
+          state.stats.playTimeMs =
+            (state.stats.playTimeMs || 0) +
+            Math.max(0, now - playSessionStartedAt);
+          playSessionStartedAt = now;
+          save();
+        }
+        function formatPlayTime(milliseconds) {
+          const minutes = Math.floor(Math.max(0, milliseconds) / 60000);
+          const days = Math.floor(minutes / 1440),
+            hours = Math.floor((minutes % 1440) / 60),
+            remainingMinutes = minutes % 60;
+          if (days) return `${days} дн. ${hours} ч.`;
+          if (hours)
+            return `${hours} ч. ${String(remainingMinutes).padStart(2, "0")} мин.`;
+          return `${remainingMinutes} мин.`;
+        }
+        function currentPlayTime() {
+          return (
+            (state.stats.playTimeMs || 0) +
+            (playSessionStartedAt === null
+              ? 0
+              : Math.max(0, Date.now() - playSessionStartedAt))
+          );
+        }
+        function toast() {}
+        function addCoins(amount, reason) {
+          state.coins += amount;
+          if (reason) toast(`+${amount} золотых монет`, reason);
+        }
+        function addAccountXp(amount) {
+          state.accountXp += amount;
+          let leveled = false;
+          while (state.accountXp >= accountXpNeeded(state.accountLevel)) {
+            state.accountXp -= accountXpNeeded(state.accountLevel);
+            state.accountLevel++;
+            leveled = true;
+          }
+          if (leveled)
+            toast(
+              "Новый уровень садовода",
+              `Ваш аккаунт достиг ${state.accountLevel} уровня.`,
+            );
+        }
+        const accountXpNeeded = (level) => 100 + level * 60;
+        function ensureDaily() {
+          const key = todayKey();
+          if (state.daily.date !== key) {
+            state.daily = {
+              date: key,
+              progress: {},
+              claimed: [],
+              loginClaimed: false,
+            };
+          }
+          const last = state.lastVisit;
+          if (last !== key) {
+            const prev = new Date(`${last || key}T12:00:00`),
+              now = new Date(`${key}T12:00:00`),
+              gap = Math.round((now - prev) / 86400000);
+            state.streak =
+              last === null
+                ? 1
+                : gap === 1
+                  ? state.streak + 1
+                  : Math.max(1, state.streak - 1);
+            state.stats.days++;
+            state.stats.visitedDates.push(key);
+            state.stats.visitedDates = [
+              ...new Set(state.stats.visitedDates),
+            ].slice(-90);
+            state.lastVisit = key;
+          }
+        }
+        function achievementProgress(a) {
+          const stats = state.stats;
+          const ownedCountByRarity = (rarity) =>
+            SPECIES.filter(
+              (species) =>
+                species.rarity === rarity && state.owned.includes(species.id),
+            ).length;
+          const gardenComplete =
+            SPECIES.every(
+              (s) =>
+                state.owned.includes(s.id) &&
+                state.plants[s.id] &&
+                state.plants[s.id].level >= MAX_LEVEL,
+            );
+          switch (a.stat) {
+            case "plants":
+              return ownedSpeciesCount();
+            case "rarePlants":
+              return stats.rarePlants;
+            case "legendaryPlants":
+              return stats.legendaryPlants;
+            case "days":
+              return gardenComplete ? Math.max(stats.days, a.goal) : stats.days;
+            case "maxed":
+              return stats.maxed;
+            case "accountLevel":
+              return state.accountLevel;
+            case "plantLevels":
+              return SPECIES.reduce(
+                (total, species) =>
+                  total +
+                  (state.owned.includes(species.id)
+                    ? state.plants[species.id]?.level || 0
+                    : 0),
+                0,
+              );
+            case "fullCollection":
+              return ownedSpeciesCount() === SPECIES.length ? 1 : 0;
+            case "perfectGarden":
+              return gardenComplete ? 1 : 0;
+            case "mythicPlants":
+              return ownedCountByRarity("Мифическое");
+            case "commonPlants":
+              return ownedCountByRarity("Обычное");
+            case "uncommonPlants":
+              return ownedCountByRarity("Необычное");
+            case "exactRarePlants":
+              return ownedCountByRarity("Редкое");
+            case "epicPlants":
+              return ownedCountByRarity("Эпическое");
+            case "exactLegendaryPlants":
+              return ownedCountByRarity("Легендарное");
+            default:
+              return stats[a.stat] || 0;
+          }
+        }
+        function checkAchievements() {
+          let changed = false;
+          for (const a of ACHIEVEMENTS) {
+            if (
+              !state.achievements.includes(a.id) &&
+              achievementProgress(a) >= a.goal
+            ) {
+              state.achievements.push(a.id);
+              toast(
+                `Достижение: ${a.name}`,
+                `Награда ${a.reward} ✦ ждёт вас в разделе достижений.`,
+              );
+              changed = true;
+            }
+          }
+          return changed;
+        }
+        function claimAchievement(id) {
+          const achievement = ACHIEVEMENTS.find((item) => item.id === id);
+          if (
+            !achievement ||
+            !state.achievements.includes(id) ||
+            state.claimedAchievements.includes(id)
+          )
+            return;
+          state.claimedAchievements.push(id);
+          state.coins += achievement.reward;
+          addAccountXp(Math.ceil(achievement.reward / 2));
+          toast(
+            "Награда за достижение получена",
+            `+${achievement.reward} золотых монет и опыт аккаунта.`,
+          );
+          checkAchievements();
+          save();
+          refreshCurrentPage();
+        }
+        function dailyProgress(id, value) {
+          state.daily.progress[id] = Math.max(
+            state.daily.progress[id] || 0,
+            value,
+          );
+        }
+        function dailyTaskProgress(task) {
+          return state.daily.progress[task.stat] || 0;
+        }
+        function settleWatering() {
+          let changed = false;
+          const completedPlants = [];
+          const now = Date.now();
+          for (const id of state.owned) {
+            const p = state.plants[id];
+            if (p.watering && now >= p.watering.endsAt) {
+              const s = speciesById(id),
+                earned = s.xp;
+              const oldLevel = p.level;
+              p.watering = null;
+              p.xp += earned;
+              state.stats.waters++;
+              state.coins += Math.max(8, Math.round(12 + s.xp * 0.16));
+              addAccountXp(Math.round(earned * 0.65));
+              dailyProgress(
+                "watersToday",
+                (state.daily.progress.watersToday || 0) + 1,
+              );
+              dailyProgress(
+                "xpToday",
+                (state.daily.progress.xpToday || 0) + earned,
+              );
+              while (p.level < MAX_LEVEL && p.xp >= xpNeeded(p.level)) {
+                p.xp -= xpNeeded(p.level);
+                p.level++;
+                state.stats.levelUps++;
+                state.coins += 25;
+                addAccountXp(35);
+                dailyProgress("levelsToday", 1);
+                toast(
+                  `${s.name}: уровень ${p.level}!`,
+                  "Растение стало заметно пышнее. +25 монет",
+                );
+              }
+              if (p.level === MAX_LEVEL && oldLevel < MAX_LEVEL) {
+                p.xp = 0;
+                if (!p.maxRewarded) {
+                  p.maxRewarded = true;
+                  state.stats.maxed++;
+                  state.coins += 250;
+                  addAccountXp(180);
+                  toast(
+                    "Максимальный уровень!",
+                    `${s.name} получил золотое оформление и +250 монет`,
+                  );
+                }
+              }
+              toast(
+                `Уход завершён: ${s.name}`,
+                `+${earned} опыта растения • монеты за заботу начислены`,
+              );
+              completedPlants.push(id);
+              changed = true;
+            }
+          }
+          if (changed) {
+            checkAchievements();
+            save();
+            completedPlants.forEach(updatePlantCard);
+            refreshCurrentPage();
+          }
+          return changed;
+        }
+        function requirementText(s) {
+          if (s.starter) return "Стартовое растение";
+          const conditions = [];
+          if (s.level > 1) conditions.push(`уровень аккаунта ${s.level}`);
+          if (s.achievement) {
+            const a = ACHIEVEMENTS.find((x) => x.id === s.achievement);
+            conditions.push(`достижение «${a?.name || s.achievement}»`);
+          }
+          return conditions.length
+            ? conditions.join(" · ")
+            : "Доступно для открытия";
+        }
+        function canUnlock(s) {
+          return (
+            !state.owned.includes(s.id) &&
+            state.coins >= s.cost &&
+            state.accountLevel >= s.level &&
+            (!s.achievement || state.achievements.includes(s.achievement))
+          );
+        }
+        function unlockPlant(id) {
+          const s = speciesById(id);
+          if (!s || state.owned.includes(id)) return;
+          if (state.accountLevel < s.level) {
+            toast("Пока недоступно", `Нужен ${s.level} уровень аккаунта.`);
+            return;
+          }
+          if (s.achievement && !state.achievements.includes(s.achievement)) {
+            toast(
+              "Пока недоступно",
+              `Сначала получите достижение «${ACHIEVEMENTS.find((a) => a.id === s.achievement)?.name}».`,
+            );
+            return;
+          }
+          if (state.coins < s.cost) {
+            toast(
+              "Недостаточно монет",
+              `Нужно ещё ${formatCoins(s.cost - state.coins)} монет.`,
+            );
+            return;
+          }
+          state.coins -= s.cost;
+          state.owned.push(id);
+          state.plants[id] = {
+            level: 1,
+            xp: 0,
+            watering: null,
+            maxRewarded: false,
+            pot: state.equippedPot,
+            fertilizer: null,
+          };
+          state.stats.opened++;
+          if (
+            ["Редкое", "Эпическое", "Легендарное", "Мифическое"].includes(
+              s.rarity,
+            )
+          )
+            state.stats.rarePlants++;
+          if (["Легендарное", "Мифическое"].includes(s.rarity))
+            state.stats.legendaryPlants++;
+          toast(
+            `Новое растение: ${s.name}`,
+            "Добро пожаловать в вашу коллекцию.",
+          );
+          checkAchievements();
+          save();
+          if (currentPage === "collection") {
+            refreshCollectionPlantUI(id);
+            updateTopbar();
+          } else if (currentPage === "shop") {
+            refreshShopPlantUI(id);
+          } else {
+            refreshCurrentPage();
+          }
+        }
+        function unlockDailyReward() {
+          if (state.daily.loginClaimed) {
+            toast("Подарок уже получен", "Загляните завтра за новой наградой.");
+            return;
+          }
+          const reward = 45 + Math.min(7, state.streak - 1) * 12;
+          state.daily.loginClaimed = true;
+          dailyProgress("login", 1);
+          addCoins(reward, "Ежедневный подарок");
+          addAccountXp(25);
+          checkAchievements();
+          save();
+          refreshCurrentPage();
+        }
+        function claimTask(id) {
+          const t = DAILY_TEMPLATES.find((x) => x.id === id);
+          if (
+            !t ||
+            state.daily.claimed.includes(id) ||
+            dailyTaskProgress(t) < t.goal
+          )
+            return;
+          state.daily.claimed.push(id);
+          addCoins(t.reward, "Ежедневное задание выполнено");
+          addAccountXp(35);
+          checkAchievements();
+          save();
+          refreshCurrentPage();
+        }
+        function startWatering(id) {
+          const p = state.plants[id],
+            s = speciesById(id);
+          if (p?.level === MAX_LEVEL) {
+            toast(
+              "Растение полностью развито",
+              "На максимальном уровне полив больше не требуется.",
+            );
+            return;
+          }
+          if (!p || p.watering) {
+            toast(
+              "Растение уже получает воду",
+              "Дождитесь завершения текущего полива.",
+            );
+            return;
+          }
+          const fertilizer = p.fertilizer
+            ? FERTILIZERS.find((item) => item.id === p.fertilizer)
+            : null;
+          const duration = Math.max(
+            5,
+            Math.ceil(
+              s.water * (1 - (fertilizer?.reduction || 0) / 100),
+            ),
+          );
+          const startedAt = Date.now();
+          p.watering = {
+            startedAt,
+            endsAt: startedAt + duration * 1000,
+            fertilizer: fertilizer
+              ? { id: fertilizer.id, reduction: fertilizer.reduction }
+              : null,
+          };
+          p.fertilizer = null;
+          toast(
+            "Полив начат",
+            `${s.name} будет готово через ${fmtTime(duration)}${fertilizer ? ` · ${fertilizer.name}: −${fertilizer.reduction}%` : ""}.`,
+          );
+          save();
+          updatePlantCard(id);
+        }
+        function potName(id) {
+          return id === "default"
+            ? "Базовый горшок"
+            : POTS.find((p) => p.id === id)?.name || "Базовый горшок";
+        }
+        function buyPot(id) {
+          const item = POTS.find((p) => p.id === id);
+          if (!item) return;
+          const alreadyOwned = state.unlockedPots.includes(id);
+          if (!alreadyOwned) {
+            if (state.coins < item.cost) {
+              toast("Недостаточно монет");
+              return;
+            }
+            state.coins -= item.cost;
+            state.unlockedPots.push(id);
+          }
+          state.equippedPot = id;
+          state.owned.forEach((pid) => (state.plants[pid].pot = id));
+          toast(
+            alreadyOwned ? "Горшок изменён" : "Новый горшок открыт",
+            `${item.name} ${alreadyOwned ? "выбран" : "экипирован"} для всех растений.`,
+          );
+          save();
+          refreshPotPurchaseUI(id);
+        }
+        function buyFertilizer(id, quantity) {
+          const item = FERTILIZERS.find((fertilizer) => fertilizer.id === id);
+          const requestedAmount = Math.floor(Number(quantity));
+          const amount = Number.isFinite(requestedAmount)
+            ? Math.max(1, Math.min(10, requestedAmount))
+            : 1;
+          if (!item) return;
+          if (state.accountLevel < item.level) {
+            toast("Удобрение пока недоступно", `Нужен ${item.level} уровень сада.`);
+            return;
+          }
+          const totalCost = item.cost * amount;
+          if (state.coins < totalCost) {
+            toast("Недостаточно монет", `Нужно ${formatCoins(totalCost)} ✦.`);
+            return;
+          }
+          state.coins -= totalCost;
+          state.fertilizers[id] += amount;
+          toast("Удобрение куплено", `${item.name} ×${amount} · запас: ${state.fertilizers[id]} шт.`);
+          save();
+          refreshFertilizerPurchaseUI(id);
+        }
+        function refreshFertilizerPurchaseUI(id) {
+          const item = FERTILIZERS.find((fertilizer) => fertilizer.id === id);
+          if (!item || currentPage !== "shop") return;
+          const topbarCoins = document.querySelector(
+            ".top-stats .stat-chip:not(.level-chip) strong",
+          );
+          if (topbarCoins) topbarCoins.textContent = formatCoins(state.coins);
+          const card = [...document.querySelectorAll("[data-fertilizer-card]")].find(
+            (element) => element.dataset.fertilizerCard === id,
+          );
+          if (card) {
+            const stock = card.querySelector("[data-fertilizer-stock]");
+            if (stock) stock.textContent = `Запас: ${state.fertilizers[id]} шт.`;
+          }
+          const categoryCount = document.querySelector(
+            '[data-shop-category="fertilizers"] .shop-category-count',
+          );
+          if (categoryCount) {
+            categoryCount.textContent = String(
+              Object.values(state.fertilizers).reduce(
+                (total, amount) => total + amount,
+                0,
+              ),
+            );
+          }
+          const coins = document.querySelector(".shop-results-head > .gold");
+          if (coins) coins.textContent = `${formatCoins(state.coins)} ✦`;
+        }
+        function updateFertilizerQuantity(range) {
+          const card = range.closest(".fertilizer-shop-card");
+          const item = FERTILIZERS.find(
+            (fertilizer) => fertilizer.id === card?.dataset.fertilizerCard,
+          );
+          if (!card || !item) return;
+          const amount = Number(range.value);
+          const label = card.querySelector("[data-quantity-label]");
+          const cost = card.querySelector("[data-quantity-cost]");
+          if (label) label.textContent = `${amount} шт.`;
+          if (cost)
+            cost.textContent = `${formatCoins(amount * item.cost)} монет`;
+        }
+        function applyFertilizer(plantId, fertilizerId) {
+          const plant = state.plants[plantId];
+          const item = FERTILIZERS.find(
+            (fertilizer) => fertilizer.id === fertilizerId,
+          );
+          if (!plant || !state.owned.includes(plantId) || !item) return;
+          if (plant.level === MAX_LEVEL) {
+            toast(
+              "Растение полностью развито",
+              "На максимальном уровне подкормка больше не требуется.",
+            );
+            return;
+          }
+          if (plant.watering) {
+            toast("Растение поливается", "Подкормить его можно после завершения полива.");
+            return;
+          }
+          if (plant.fertilizer) {
+            toast("Подкормка уже подготовлена", "Она ускорит следующий полив этого растения.");
+            return;
+          }
+          if (state.accountLevel < item.level) {
+            toast("Удобрение пока недоступно", `Нужен ${item.level} уровень сада.`);
+            return;
+          }
+          if ((state.fertilizers[item.id] || 0) < 1) {
+            toast("Удобрения закончились", "Купите запас в магазине.");
+            return;
+          }
+          state.fertilizers[item.id]--;
+          plant.fertilizer = item.id;
+          toast("Растение подготовлено", `${item.name} ускорит следующий полив на ${item.reduction}%.`);
+          save();
+          state.owned.forEach(updatePlantCard);
+          updateTopbar();
+        }
+        function potSvg(id = "default") {
+          const designs = {
+            default: {
+              body: "M43 111h74l-8 38H51z",
+              rim: "M40 108q0-4 5-4h70q5 0 5 4v8H40z",
+              bodyFill: "#25231d",
+              rimFill: "#312c20",
+              edge: "#b18834",
+              detail: '<path d="M51 117h58" stroke="#fff" stroke-opacity=".07"/>',
+            },
+            stone: {
+              body: "M44 111h72l-9 37H53z",
+              rim: "M40 108q0-4 5-4h70q5 0 5 4v8H40z",
+              bodyFill: "#292a29",
+              rimFill: "#3b3c39",
+              edge: "#9b9a8e",
+              detail: '<path d="M52 120h56m-53 8h49m-46 8h43" stroke="#c2c1b8" stroke-opacity=".13"/><path d="M46 109h68" stroke="#e5e3d8" stroke-opacity=".22"/>',
+            },
+            porcelain: {
+              body: "M45 111h70q-3 24-14 38H59q-11-14-14-38z",
+              rim: "M40 108q0-4 5-4h70q5 0 5 4v8H40z",
+              bodyFill: "#ded7c7",
+              rimFill: "#eee7d5",
+              edge: "#d4af37",
+              detail: '<path d="M49 119h62M56 143h48" stroke="#b9932d" stroke-width="1.5"/><path d="M59 124q21 12 42 0" fill="none" stroke="#fff" stroke-opacity=".36"/>',
+            },
+            moonpot: {
+              body: "M48 111h64l-7 37H55z",
+              rim: "M43 108q0-4 5-4h64q5 0 5 4v8H43z",
+              bodyFill: "#252638",
+              rimFill: "#393a52",
+              edge: "#c6b9ec",
+              detail: '<path d="M51 119h58" stroke="#eee4ff" stroke-opacity=".32"/><path d="M87 126a7 7 0 1 0 7 11 8 8 0 0 1-7-11z" fill="#ded5f5"/><circle cx="67" cy="132" r="1.5" fill="#e8defc"/><circle cx="101" cy="139" r="1" fill="#e8defc"/>',
+            },
+            jade: {
+              body: "M44 111h72q-4 12-12 15 5 9 0 22H56q-5-13 0-22-8-3-12-15z",
+              rim: "M39 108q0-4 5-4h72q5 0 5 4v8H39z",
+              bodyFill: "#174b3f",
+              rimFill: "#236859",
+              edge: "#a5c57c",
+              detail: '<path d="M48 118q32 11 64 0M59 137h42" fill="none" stroke="#b9d991" stroke-opacity=".65"/><path d="M80 122l4 5-4 5-4-5z" fill="#c4dba0"/>',
+            },
+            obsidian: {
+              body: "M46 111h68l-5 12 4 25H47l4-25z",
+              rim: "M39 108l5-5h72l5 5-5 8H44z",
+              bodyFill: "#17171a",
+              rimFill: "#29292d",
+              edge: "#d4af37",
+              detail: '<path d="M51 119l8 27m50-27-8 27M57 132h46" stroke="#d4af37" stroke-opacity=".58" stroke-width="1.2"/><path d="M51 118h58" stroke="#f0d77a" stroke-opacity=".4"/>',
+            },
+            imperial: {
+              body: "M49 111h62q-2 9-8 13l5 24H52l5-24q-6-4-8-13z",
+              rim: "M39 108q0-4 5-4h72q5 0 5 4v8H39z",
+              bodyFill: "#641f25",
+              rimFill: "#8b3431",
+              edge: "#f0d77a",
+              detail: '<path d="M49 118h62M57 143h46" stroke="#f0d77a" stroke-width="1.5"/><path d="M80 121l3 5 6 1-4 4 1 6-6-3-6 3 1-6-4-4 6-1z" fill="#f0d77a"/><circle cx="57" cy="126" r="1.4" fill="#f0d77a"/><circle cx="103" cy="126" r="1.4" fill="#f0d77a"/>',
+            },
+          };
+          const design = designs[id] || designs.default;
+          return `<g aria-hidden="true"><ellipse cx="80" cy="151" rx="43" ry="7" fill="#000" opacity=".4"/><path d="${design.body}" fill="${design.bodyFill}" stroke="${design.edge}" stroke-opacity=".8" stroke-width="1.4" stroke-linejoin="round"/><path d="${design.rim}" fill="${design.rimFill}" stroke="${design.edge}" stroke-width="1.3" stroke-linejoin="round"/>${design.detail}</g>`;
+        }
+        function plantSvg(s, level, pot) {
+          const c = s.color,
+            dark = "#25251e",
+            mature = level >= 8,
+            amount = Math.min(1, level / 10),
+            extra = level >= 6 ? 1 : 0;
+          const leaf = (x, y, rot = 0, scale = 1, fill = c) =>
+            `<path d="M0 0 C-15 -13 -13 -33 1 -42 C15 -30 14 -12 0 0Z" transform="translate(${x} ${y}) rotate(${rot}) scale(${scale})" fill="${fill}" stroke="#d9e8c229"/>`;
+          const flower = (x, y, r = 7, fill = c) =>
+            `<g transform="translate(${x} ${y})"><circle r="${r}" fill="${fill}"/><circle r="${r * 0.36}" fill="#f1d27a"/>${[0, 60, 120].map((a) => `<ellipse rx="${r * 0.34}" ry="${r * 0.72}" transform="rotate(${a})" fill="#f6e5d2" opacity=".85"/>`).join("")}</g>`;
+          let plant = "";
+          if (s.shape === "cactus")
+            plant = `<path d="M76 105V43q0-12 8-12t8 12v62M78 73H65q-8 0-8-9v-9M91 61h11q7 0 7 8v9" fill="none" stroke="${c}" stroke-width="13" stroke-linecap="round"/><path d="M84 47v6M62 61v7M105 74v6" stroke="#d7cf95" stroke-width="2"/>${level > 4 ? flower(84, 28, 5, "#e7b58f") : ""}`;
+          else if (
+            s.shape === "bonsai" ||
+            s.shape === "olive" ||
+            s.shape === "sakura" ||
+            s.shape === "maple" ||
+            s.shape === "eternal"
+          ) {
+            plant = `<path d="M80 110Q72 84 84 61Q94 43 88 31M81 82Q58 68 50 54M85 69Q108 58 113 43" fill="none" stroke="#90754a" stroke-width="${s.shape === "eternal" ? 8 : 5}" stroke-linecap="round"/>`;
+            const crowns =
+              s.shape === "sakura"
+                ? [
+                    [53, 51],
+                    [79, 33],
+                    [107, 47],
+                    [67, 59],
+                    [96, 61],
+                  ]
+                : [
+                    [54, 51],
+                    [78, 35],
+                    [104, 49],
+                    [67, 61],
+                    [95, 62],
+                    [79, 54],
+                  ];
+            for (const [x, y] of crowns) {
+              plant += `<circle cx="${x}" cy="${y}" r="${s.shape === "eternal" ? 19 : 16}" fill="${c}" opacity=".88"/>`;
+              if (s.shape === "sakura") plant += flower(x, y, 5, "#f0b8c5");
+              if (s.shape === "maple")
+                plant += `<path d="M${x} ${y - 8}l3 6 6-2-3 6 4 4-7-1-3 6-2-7-6 1 4-5-3-5 6 2z" fill="#f1d47c"/>`;
+            }
+            if (s.shape === "eternal")
+              plant += `<circle cx="80" cy="49" r="36" fill="none" stroke="#f3dc88" stroke-opacity=".45"/>`;
+          } else if (s.shape === "crystal") {
+            plant = `<path d="M80 107V52l-17-14 4-19 14 13 13-19 7 20-14 17v57" fill="${c}" fill-opacity=".75" stroke="#d9ffff" stroke-opacity=".8" stroke-width="1.5"/><path d="M80 34v62M67 38l14 14 20-19" stroke="#e9ffff" stroke-opacity=".65"/>`;
+          } else if (s.shape === "moon" || s.shape === "nebula") {
+            plant = `<path d="M80 108V57M80 80Q58 69 51 55M80 87Q102 70 109 55" stroke="${c}" stroke-width="3" fill="none"/>`;
+            plant +=
+              flower(80, 46, 18, c) +
+              flower(52, 51, 11, s.shape === "nebula" ? "#e8c79d" : "#d1c5ed") +
+              flower(108, 51, 11, s.shape === "nebula" ? "#f3d1d7" : "#b8d9ef");
+            plant += `<circle cx="80" cy="46" r="31" fill="none" stroke="${c}" stroke-opacity=".28"/>`;
+          } else if (s.shape === "lavender" || s.shape === "wisteria") {
+            const stems = s.shape === "wisteria" ? 5 : 4;
+            for (let i = 0; i < stems; i++) {
+              const x = 54 + i * 13;
+              plant += `<path d="M80 110Q${x} 79 ${x} ${48 + (i % 2) * 8}" fill="none" stroke="#73936d" stroke-width="2"/>`;
+              for (let j = 0; j < 4; j++)
+                plant += flower(x + (j % 2 ? 4 : -3), 55 + j * 10, 4, c);
+            }
+            plant += leaf(70, 96, -40, 0.7) + leaf(92, 92, 40, 0.7);
+          } else if (s.shape === "flower" || s.shape === "orchid") {
+            plant = `<path d="M80 108V50M80 78Q61 62 58 53M80 84Q100 68 103 57" fill="none" stroke="#7b9b72" stroke-width="3"/>${leaf(68, 78, -45, 0.72)}${leaf(91, 85, 43, 0.7)}${flower(80, 44, s.shape === "orchid" ? 15 : 12, c)}${flower(58, 50, 8, s.shape === "orchid" ? "#e0b5dd" : "#f0e9ce")}${flower(103, 53, 8, s.shape === "orchid" ? "#d5aed5" : "#f0e9ce")}`;
+          } else if (s.shape === "fern") {
+            plant = `<path d="M80 108Q80 67 80 36M80 91Q56 73 53 52M80 84Q103 69 108 45" fill="none" stroke="#76a783" stroke-width="3"/>`;
+            for (let i = 0; i < 4; i++) {
+              plant +=
+                leaf(80, 82 - i * 11, -65, 0.48) +
+                leaf(80, 79 - i * 11, 65, 0.48);
+            }
+          } else if (s.shape === "monstera") {
+            plant = `<path d="M80 108V63M80 90Q59 77 57 59M80 81Q103 69 104 49" fill="none" stroke="#6b9476" stroke-width="3"/>`;
+            plant += `<path d="M57 63Q39 55 48 34Q55 20 74 31Q88 43 72 62Z" fill="${c}"/><path d="M104 52Q91 42 99 27Q109 17 122 30Q130 42 114 53Z" fill="${c}"/><path d="M58 37l7 20m38-24 9 16" stroke="#dce6c9" stroke-opacity=".55"/>`;
+          } else {
+            plant = `<path d="M80 108V75M80 91Q60 81 56 62M80 86Q101 72 105 56M80 76Q72 59 75 45" fill="none" stroke="#789573" stroke-width="3"/>`;
+            plant +=
+              leaf(62, 71, -52, 0.9) +
+              leaf(98, 67, 48, 0.9) +
+              leaf(76, 57, -10, 0.9) +
+              leaf(87, 94, 45, 0.85) +
+              leaf(67, 97, -55, 0.75);
+            if (s.shape === "sprout")
+              plant += `<path d="M80 75Q56 57 61 41Q79 42 80 75Q83 47 101 40Q105 60 80 75Z" fill="${c}" stroke="#d9e8c229"/>`;
+          }
+          if (level >= 3 && s.shape === "sprout")
+            plant += leaf(58, 91, -56, 0.65) + leaf(103, 95, 52, 0.68);
+          if (level >= 5 && s.shape !== "cactus" && s.shape !== "crystal")
+            plant += leaf(58, 70, -54, 0.76) + leaf(103, 74, 55, 0.74);
+          const maxed = level === MAX_LEVEL;
+          const sparkle = maxed
+            ? `<g fill="#fff0ae"><path d="M34 39l3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/><path d="M125 68l2.5 5.5 5.5 2.5-5.5 2.5-2.5 5.5-2.5-5.5-5.5-2.5 5.5-2.5z"/><path d="M48 93l2 4 4 2-4 2-2 4-2-4-4-2 4-2z"/></g>`
+            : mature
+              ? `<g fill="#f4db88"><path d="M35 45l2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/><path d="M123 77l2 4 4 1-4 2-2 4-1-4-4-2 4-1z"/></g>`
+            : "";
+          const potDesign = pot || "default";
+          const maxedOrnament = maxed
+            ? `<circle cx="80" cy="75" r="65" fill="none" stroke="#f0d77a" stroke-opacity=".58" stroke-width="1.1"/><circle cx="80" cy="75" r="60" fill="none" stroke="#fff0ae" stroke-opacity=".28" stroke-width=".7" stroke-dasharray="1 5"/><path d="M80 6l2 4 4 2-4 2-2 4-2-4-4-2 4-2zM145 75l2 4 4 2-4 2-2 4-2-4-4-2 4-2zM15 75l2 4 4 2-4 2-2 4-2-4-4-2 4-2z" fill="#f0d77a"/>`
+            : mature
+              ? `<circle cx="80" cy="75" r="58" fill="none" stroke="${c}" stroke-opacity=".1"/>`
+              : "";
+          return `<svg class="plant-svg" viewBox="0 0 160 170" aria-hidden="true">${maxedOrnament}${sparkle}${plant}${potSvg(potDesign)}</svg>`;
+        }
+        function navItems() {
+          return [
+            ["garden", "♧", "Мой сад"],
+            ["collection", "❋", "Коллекция"],
+            ["shop", "◇", "Магазин"],
+            ["quests", "✦", "Задания"],
+            ["achievements", "♕", "Достижения"],
+            ["stats", "◷", "Статистика"],
+            ["settings", "⚙", "Настройки"],
+          ];
+        }
+        function appShell() {
+          const xpPct = Math.min(
+            100,
+            (state.accountXp / accountXpNeeded(state.accountLevel)) * 100,
+          );
+          const mobileLabels = {
+            garden: "Сад",
+            collection: "Виды",
+            shop: "Магазин",
+            quests: "Задания",
+            achievements: "Достиж.",
+            stats: "Стат.",
+            settings: "Настр.",
+          };
+          return `<aside class="sidebar"><div class="brand"><div class="brand-mark">✳</div><div><div class="brand-name">GARDEN EMPIRE</div><div class="brand-sub">THE QUIET GARDEN</div></div></div><div class="nav-label">Пространство</div><nav class="nav">${navItems()
+            .map(
+              ([id, ico, label]) =>
+                `<button class="nav-btn ${currentPage === id ? "active" : ""}" data-page="${id}"><span class="nav-ico">${ico}</span>${label}</button>`,
+            )
+            .join(
+              "",
+            )}</nav><div class="sidebar-bottom"><div class="side-note"><b>Ваш сад ждёт</b>Немного заботы — и он расцветёт.</div></div></aside><main class="main"><header class="topbar"><div class="page-title">${navItems().find((n) => n[0] === currentPage)?.[2] || "Мой сад"}</div><div class="top-stats"><div class="stat-chip level-chip"><div><span class="label">Уровень сада</span><strong class="gold">Ур. ${state.accountLevel}</strong><div class="mini-progress"><i style="width:${xpPct}%"></i></div></div></div><div class="stat-chip"><span class="gold">✦</span><strong>${formatCoins(state.coins)}</strong><span class="label">монет</span></div></div></header><section class="content" id="content">${pageContent()}</section></main><nav class="mobile-nav">${navItems()
+            .map(
+              ([id, ico, label]) =>
+                `<button class="${currentPage === id ? "active" : ""}" data-page="${id}" aria-label="${label}" title="${label}"><span>${ico}</span>${mobileLabels[id]}</button>`,
+            )
+            .join("")}</nav>`;
+        }
+        function plantCard(id) {
+          const s = speciesById(id),
+            p = state.plants[id],
+            level = p.level,
+            maxed = p.level === MAX_LEVEL || level === MAX_LEVEL,
+            busy = p.watering,
+            progress = level === MAX_LEVEL
+              ? 100
+              : Math.min(100, (p.xp / xpNeeded(level)) * 100),
+            remaining = busy
+              ? Math.max(0, Math.ceil((p.watering.endsAt - Date.now()) / 1000))
+              : 0;
+          const selectedFertilizer = p.fertilizer
+            ? FERTILIZERS.find((item) => item.id === p.fertilizer)
+            : null;
+          const appliedFertilizer = p.watering?.fertilizer
+            ? FERTILIZERS.find(
+                (item) => item.id === p.watering.fertilizer.id,
+              )
+            : null;
+          const availableFertilizers = FERTILIZERS.filter(
+            (item) =>
+              item.level <= state.accountLevel && state.fertilizers[item.id] > 0,
+          );
+          const fertilizerControl = maxed
+            ? `<div class="plant-fertilizer"><span class="fertilizer-stock">Уход завершён · максимальный уровень</span></div>`
+            : busy
+            ? `<div class="plant-fertilizer"><span class="fertilizer-stock">${appliedFertilizer ? `Полив с подкормкой: ${appliedFertilizer.name} · −${appliedFertilizer.reduction}% времени` : "Подкормка доступна после полива."}</span></div>`
+            : selectedFertilizer
+              ? `<div class="plant-fertilizer"><span class="fertilizer-ready">${selectedFertilizer.name} подготовлено: следующий полив быстрее на ${selectedFertilizer.reduction}%.</span></div>`
+              : `<div class="plant-fertilizer">${availableFertilizers.length ? `<div class="fertilizer-picker-head"><span>Удобрение для полива</span></div><div class="fertilizer-options" role="group" aria-label="Выбрать удобрение для ${s.name}">${availableFertilizers.map((item, index) => `<button type="button" class="fertilizer-option" data-fertilizer-option="${item.id}" aria-pressed="${index === 0}"><span class="fertilizer-option-icon" aria-hidden="true">${item.icon}</span><span class="fertilizer-option-copy"><span class="fertilizer-option-name">${item.name}</span><span class="fertilizer-option-detail">−${item.reduction}% · ${state.fertilizers[item.id]} шт.</span></span></button>`).join("")}</div><button class="btn btn-small fertilizer-apply" data-action="fertilize" data-id="${id}">Подкормить растение</button>` : `<span class="fertilizer-stock">Удобрений пока нет в запасе.</span>`}</div>`;
+          return `<article class="plant-card ${maxed ? "maxed" : ""} ${busy ? "watering" : ""}" data-plant-card="${id}" style="--rarity:${RARITIES[s.rarity]}"><div class="plant-art ${maxed ? "maxed" : ""}"><span class="rarity-tag">${s.rarity}</span>${maxed ? '<span class="max-badge">✦ УРОВЕНЬ 10</span>' : ""}<div class="water-overlay"></div>${plantSvg(s, level, p.pot || state.equippedPot)}</div><div class="plant-info"><div class="plant-title-row"><h3 class="plant-title">${s.name}</h3><span class="plant-level">УРОВЕНЬ ${level}/10</span></div><p class="plant-description">${level === 10 ? "Полностью развито · уникальное золотое оформление." : `Горшок: ${potName(p.pot || state.equippedPot)}`}</p><div class="growth-row"><span>Опыт растения</span><span>${level === 10 ? "МАКСИМАЛЬНЫЙ УРОВЕНЬ" : `${p.xp} / ${xpNeeded(level)} XP`}</span></div><div class="bar"><i style="width:${progress}%"></i></div><div class="water-status">${maxed ? "Уход завершён · максимальный уровень" : busy ? `Полив завершится через <strong class="countdown" data-end="${p.watering.endsAt}">${fmtTime(remaining)}</strong>` : `Готово к уходу · ${fmtTime(s.water)}`}</div>${fertilizerControl}<div class="card-actions"><button class="btn btn-primary btn-block" data-action="water" data-id="${id}" ${maxed || busy ? "disabled" : ""}>${maxed ? "Максимальный уровень" : busy ? "Поливается…" : "Полить растение"}</button></div></div></article>`;
+        }
+        function gardenPage() {
+          const open = ownedSpeciesCount(),
+            flowers = state.stats.waters,
+            progress = Math.min(
+              100,
+              (state.accountXp / accountXpNeeded(state.accountLevel)) * 100,
+            ),
+            reward = 45 + Math.min(7, state.streak - 1) * 12;
+          return `<div class="hero"><div class="hero-copy"><div class="eyebrow">Добро пожаловать в ваше убежище</div><h1>Растите в своём ритме.</h1><p>Небольшой ежедневный ритуал превращает один росток в коллекцию, которой хочется любоваться.</p></div><div class="hero-meta"><div><strong data-garden-plants>${open}</strong><span>растений</span></div><div><strong data-garden-waters>${flowers}</strong><span>поливов</span></div><div><strong data-garden-streak>${state.streak}</strong><span>дней подряд</span></div></div></div>
+        <div class="section-head"><div><h2>Ваш сад</h2><p>Растения продолжают расти, даже когда вы отдыхаете.</p></div><button class="btn btn-small" data-page="collection">Открыть коллекцию →</button></div>
+        <div class="plant-grid">${state.owned.map(plantCard).join("")}</div>
+        <div class="section-head"><div><h2>Ежедневный ритуал</h2><p>Каждый день — новый повод вернуться.</p></div></div>
+        <div class="quick-grid"><div class="panel daily-banner"><div class="daily-row"><div><h3>Подарок садовода</h3><p>Серия не обнуляется после пропуска дня.</p></div><div class="streak">✦ ${state.streak} ${state.streak === 1 ? "день" : "дн."}</div></div><div class="daily-row" style="margin-top:19px"><span class="gold">Сегодня вам доступно ${reward} монет</span><button class="btn btn-primary btn-small" data-action="daily" ${state.daily.loginClaimed ? "disabled" : ""}>${state.daily.loginClaimed ? "Получено сегодня" : "Забрать подарок"}</button></div></div>
+        <div class="panel"><div class="daily-row"><div><h3 style="font:20px var(--serif);font-weight:400;margin:0">Уровень садовода</h3><p style="font-size:11px;color:var(--muted);margin:4px 0 0">Опыт открывает новые виды.</p></div><span class="gold" data-garden-account-level>Ур. ${state.accountLevel}</span></div><div class="bar" style="height:5px;margin-top:18px"><i data-garden-account-progress style="width:${progress}%"></i></div><div class="growth-row" style="margin-top:7px"><span data-garden-account-xp>${state.accountXp} XP</span><span data-garden-account-next>${accountXpNeeded(state.accountLevel)} XP до уровня ${state.accountLevel + 1}</span></div></div></div>`;
+        }
+        function collectionPage() {
+          const species = SPECIES.filter(
+            (s) =>
+              (filterRarity === "Все редкости" || s.rarity === filterRarity) &&
+              (filterStatus === "Все" ||
+                (filterStatus === "Открытые" && state.owned.includes(s.id)) ||
+                (filterStatus === "Закрытые" && !state.owned.includes(s.id))) &&
+              (filterLevel === "Любой уровень" ||
+                s.level <= Number(filterLevel)),
+          );
+          return `<div class="eyebrow">Гербарий</div><h1 class="heading">Коллекция</h1><p class="subheading">Каждое открытие — новый характер и своя история роста.</p><div class="collection-filters"><select class="select" id="rarity-filter">${["Все редкости", ...Object.keys(RARITIES)].map((v) => `<option ${filterRarity === v ? "selected" : ""}>${v}</option>`).join("")}</select><select class="select" id="status-filter">${["Все", "Открытые", "Закрытые"].map((v) => `<option ${filterStatus === v ? "selected" : ""}>${v}</option>`).join("")}</select><select class="select" id="level-filter">${["Любой уровень", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((v) => `<option ${String(filterLevel) === String(v) ? "selected" : ""}>${v}</option>`).join("")}</select><span class="collection-open-count" style="color:var(--muted);font-size:11px;margin-left:auto">${ownedSpeciesCount()} из ${SPECIES.length} открыто</span></div><div class="catalog-grid">${
+            species
+              .map((s) => {
+                const owned = state.owned.includes(s.id),
+                  p = state.plants[s.id],
+                  ok = canUnlock(s);
+                const level = owned ? p.level : 1;
+                const maxed = owned && level === MAX_LEVEL;
+                return `<article class="catalog-card ${owned ? "" : "locked"} ${maxed ? "maxed" : ""}" data-species-card="${s.id}" style="--rarity:${RARITIES[s.rarity]}"><div class="catalog-art ${maxed ? "maxed" : ""}">${plantSvg(s, level, "default")}${maxed ? '<span class="max-badge">✦ УРОВЕНЬ 10</span>' : ""}${owned ? "" : '<span class="lock-mark">⌑</span>'}<span class="rarity-tag">${s.rarity}</span></div><div class="catalog-info"><h3>${s.name}</h3><p>${owned ? `${maxed ? "МАКСИМАЛЬНЫЙ УРОВЕНЬ · " : `Уровень ${level} · `}${s.desc}` : `${s.desc} Требование: ${requirementText(s)}.`}</p><div class="catalog-foot"><span class="rarity-text">${maxed ? "✦ МАКСИМУМ" : owned ? "ОТКРЫТО" : `${formatCoins(s.cost)} ✦`}</span>${owned ? `<button class="btn btn-small" data-page="garden">В саду</button>` : `<button class="btn ${ok ? "btn-primary" : ""} btn-small" data-action="unlock" data-id="${s.id}" ${ok ? "" : 'title="' + requirementText(s) + '"'}>Открыть</button>`}</div></div></article>`;
+              })
+              .join("") ||
+            '<div class="empty-state">По этим фильтрам растений нет.</div>'
+          }</div>`;
+        }
+        function shopPage() {
+          const plants = SPECIES.filter(
+            (s) => !s.starter && !state.owned.includes(s.id),
+          );
+          const plantCards = plants
+            .map((s) => {
+              const ok = canUnlock(s);
+              return `<article class="shop-card" data-shop-plant="${s.id}"><div class="shop-symbol" style="color:${s.color}">${s.shape === "sakura" ? "✿" : s.shape === "cactus" ? "♟" : "❋"}</div><h3>${s.name}</h3><p>${s.rarity} · ${s.desc} Требование: ${requirementText(s)}.</p><div class="shop-meta"><span class="coin-cost">${formatCoins(s.cost)} ✦</span><button class="btn ${ok ? "btn-primary" : ""} btn-small" data-action="unlock" data-id="${s.id}" ${ok ? "" : "disabled"}>Открыть</button></div></article>`;
+            })
+            .join("");
+          const potCards = POTS.map((p) => {
+            const owned = state.unlockedPots.includes(p.id);
+            const equipped = state.equippedPot === p.id;
+            return `<article class="shop-card" data-pot-card="${p.id}"><div class="shop-symbol">${p.icon}</div><h3>${p.name}</h3><p>${p.desc}</p><div class="shop-meta"><span class="coin-cost">${equipped ? "ИСПОЛЬЗУЕТСЯ" : owned ? "ОТКРЫТО" : `${formatCoins(p.cost)} ✦`}</span><button class="btn ${equipped ? "" : "btn-primary"} btn-small" data-action="pot" data-id="${p.id}" ${equipped ? "disabled" : ""}>${equipped ? "Выбрано" : owned ? "Выбрать" : "Купить"}</button></div></article>`;
+          }).join("");
+          const fertilizerCards = FERTILIZERS.map((fertilizer) => {
+            const unlocked = state.accountLevel >= fertilizer.level;
+            const stock = state.fertilizers[fertilizer.id] || 0;
+            return `<article class="shop-card fertilizer-shop-card ${unlocked ? "" : "locked"}" data-fertilizer-card="${fertilizer.id}"><div class="shop-symbol">${fertilizer.icon}</div><h3>${fertilizer.name}</h3><p>${fertilizer.desc} Доступно с ${fertilizer.level} уровня сада. Каждая единица действует на следующий полив одного растения.</p><div class="shop-meta"><span class="coin-cost">${formatCoins(fertilizer.cost)} ✦ / шт.</span><span class="fertilizer-stock" data-fertilizer-stock>Запас: ${stock} шт.</span><label class="fertilizer-stock">Количество: <span class="fertilizer-quantity-value" data-quantity-label>1 шт.</span><input type="range" min="1" max="10" step="1" value="1" data-fertilizer-quantity aria-label="Количество удобрения ${fertilizer.name}"><span data-quantity-cost>${formatCoins(fertilizer.cost)} монет</span></label><button class="btn ${unlocked ? "btn-primary" : ""} btn-small" data-action="buy-fertilizer" data-id="${fertilizer.id}" ${unlocked ? "" : "disabled"}>${unlocked ? "Купить выбранное количество" : `Откроется на ур. ${fertilizer.level}`}</button></div></article>`;
+          }).join("");
+          const fertilizerStock = Object.values(state.fertilizers).reduce(
+            (total, amount) => total + amount,
+            0,
+          );
+          const categories = [
+            {
+              id: "plants",
+              icon: "♧",
+              title: "Растения",
+              detail: "Новые виды и редкости",
+              count: plants.length,
+              heading: "Растения",
+              copy: "Открывайте новые виды по мере развития сада.",
+              cards: plantCards,
+              empty: "Все растения уже в вашей коллекции.",
+            },
+            {
+              id: "pots",
+              icon: "◒",
+              title: "Горшки",
+              detail: "Сосуды для коллекции",
+              count: POTS.filter((p) => !state.unlockedPots.includes(p.id))
+                .length,
+              heading: "Горшки",
+              copy: "Выберите оформление для растений.",
+              cards: potCards,
+            },
+            {
+              id: "fertilizers",
+              icon: "❋",
+              title: "Удобрения",
+              detail: "Расходуемая подкормка",
+              count: fertilizerStock,
+              heading: "Удобрения для сада",
+              copy: "Покупайте удобрения поштучно или запасом. Примените одно к растению перед поливом, чтобы сократить его время.",
+              cards: fertilizerCards,
+            },
+          ];
+          const selected =
+            categories.find((c) => c.id === shopCategory) || categories[0];
+          const resultCards =
+            selected.cards ||
+            `<div class="empty-state">${selected.empty || "Все доступные предметы уже открыты."}</div>`;
+          return `<div class="eyebrow">Всё для вашего пространства</div><h1 class="heading">Магазин</h1><p class="subheading">Тратьте только игровую валюту — реальные покупки не нужны.</p><div class="shop-categories" role="tablist" aria-label="Разделы магазина">${categories.map((c) => `<button class="shop-category ${selected.id === c.id ? "active" : ""}" role="tab" aria-selected="${selected.id === c.id}" data-shop-category="${c.id}"><span class="shop-category-icon">${c.icon}</span><span class="shop-category-copy"><strong>${c.title}</strong><small>${c.detail}</small></span><span class="shop-category-count">${c.count}</span></button>`).join("")}</div><div class="shop-results-head"><div><h2>${selected.heading}</h2><p>${selected.copy}</p></div><span class="gold">${formatCoins(state.coins)} ✦</span></div><div class="shop-grid">${resultCards}</div>`;
+        }
+        function questsPage() {
+          return `<div class="eyebrow">Маленькие цели, приятные награды</div><h1 class="heading">Задания</h1><p class="subheading">Задания обновляются по местному времени. Прогресс сохраняется между визитами.</p><div class="section-head"><div><h2>На сегодня</h2><p>${state.daily.date}</p></div><span class="gold">Серия: ${state.streak} ${state.streak === 1 ? "день" : "дн."}</span></div><div class="task-grid">${DAILY_TEMPLATES.map(
+            (t) => {
+              const val = Math.min(t.goal, dailyTaskProgress(t)),
+                done = val >= t.goal,
+                claimed = state.daily.claimed.includes(t.id);
+              return `<article class="task-card ${claimed ? "done" : ""}" data-task-card="${t.id}"><div class="task-head"><h3>${t.name}</h3><span class="reward">+${t.reward} ✦</span></div><p>${t.desc}</p><div class="bar"><i style="width:${(val / t.goal) * 100}%"></i></div><div class="task-foot"><span>${val} / ${t.goal}</span><button class="btn ${done && !claimed ? "btn-primary" : ""} btn-small" data-action="claim-task" data-id="${t.id}" ${!done || claimed ? "disabled" : ""}>${claimed ? "Получено" : done ? "Забрать" : "В процессе"}</button></div></article>`;
+            },
+          ).join(
+            "",
+          )}</div><div class="section-head"><div><h2>Календарь посещений</h2><p>Пропуск не стирает историю и почти не влияет на серию.</p></div></div>${calendarMarkup()}`;
+        }
+        function calendarMarkup() {
+          const now = new Date(),
+            monthStart = new Date(now.getFullYear(), now.getMonth(), 1),
+            days = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate(),
+            offset = (monthStart.getDay() + 6) % 7,
+            labels = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
+          return `<div class="panel"><div class="daily-row"><h3 style="font:19px var(--serif);font-weight:400;margin:0">${now.toLocaleDateString("ru-RU", { month: "long", year: "numeric" })}</h3><span class="gold">✦ ${state.streak} подряд</span></div><div class="calendar">${labels.map((l) => `<div style="text-align:center;color:#777;font-size:9px">${l}</div>`).join("")}${Array.from({ length: offset }, () => "<div></div>").join("")}${Array.from(
+            { length: days },
+            (_, i) => {
+              const d = i + 1,
+                key = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`,
+                visited = state.stats.visitedDates.includes(key);
+              return `<div class="day-cell ${visited ? "visited" : ""} ${d === now.getDate() ? "today" : ""}">${d}${visited ? "<i></i>" : ""}</div>`;
+            },
+          ).join("")}</div></div>`;
+        }
+        function achievementsPage() {
+          const pendingRewards = state.achievements.filter(
+            (id) => !state.claimedAchievements.includes(id),
+          ).length;
+          const claimedCoins = state.claimedAchievements.reduce(
+            (total, id) =>
+              total +
+              (ACHIEVEMENTS.find((achievement) => achievement.id === id)
+                ?.reward || 0),
+            0,
+          );
+          return `<div class="eyebrow">Долгий путь отмечен красивыми моментами</div><h1 class="heading">Достижения</h1><p class="subheading">Награды за любопытство, терпение и заботу. Выполненные достижения ждут, пока вы заберёте награду.</p><div class="stat-overview"><div class="stat-box"><b data-achievement-total>${state.achievements.length}</b><span>Выполнено</span></div><div class="stat-box"><b data-achievement-pending>${pendingRewards}</b><span>Наград ждут</span></div><div class="stat-box"><b data-achievement-coins>${formatCoins(claimedCoins)}</b><span>Монет забрано</span></div><div class="stat-box"><b data-achievement-maxed>${state.stats.maxed}</b><span>Растений на максимуме</span></div></div><div class="achievement-grid">${ACHIEVEMENTS.map(
+            (a) => {
+              const val = Math.min(a.goal, achievementProgress(a)),
+                done = state.achievements.includes(a.id),
+                claimed = state.claimedAchievements.includes(a.id);
+              const rewardStatus = claimed
+                ? "Награда получена"
+                : done
+                  ? "Награда готова"
+                  : `${val} / ${a.goal}`;
+              return `<article class="achievement-card ${done ? "unlocked" : ""}" data-achievement-card="${a.id}"><div class="achievement-icon">${a.icon}</div><h3>${a.name}</h3><p>${a.desc}</p><div class="bar"><i style="width:${(val / a.goal) * 100}%"></i></div><div class="achievement-progress">${rewardStatus} · ${a.reward} ✦</div>${done && !claimed ? `<button class="btn btn-primary btn-small" data-action="claim-achievement" data-id="${a.id}">Забрать награду</button>` : ""}</article>`;
+            },
+          ).join("")}</div>`;
+        }
+        function statsPage() {
+          const maxedCount = state.stats.maxed;
+          const maxLevel = Math.max(
+            ...state.owned.map((id) => state.plants[id].level),
+          );
+          const fertilizerStock = Object.values(state.fertilizers).reduce(
+            (total, amount) => total + amount,
+            0,
+          );
+          return `<div class="eyebrow">Ваш путь в цифрах</div><h1 class="heading">Статистика сада</h1><p class="subheading">История заботы — спокойный рост день за днём.</p><div class="stat-overview"><div class="stat-box"><b>${ownedSpeciesCount()}</b><span>Растений в саду</span></div><div class="stat-box"><b>${state.stats.waters}</b><span>Завершённых поливов</span></div><div class="stat-box"><b>${maxedCount}</b><span>Максимальных уровней</span></div><div class="stat-box"><b>${state.stats.days}</b><span>Дней в саду</span></div><div class="stat-box"><b>${state.accountLevel}</b><span>Уровень садовода</span></div><div class="stat-box"><b>${maxLevel}</b><span>Лучший уровень растения</span></div><div class="stat-box"><b>${ownedSpeciesCount()} / ${SPECIES.length}</b><span>Открытых видов</span></div><div class="stat-box"><b>${fertilizerStock}</b><span>Удобрений в запасе</span></div><div class="stat-box"><b class="playtime-value">${formatPlayTime(currentPlayTime())}</b><span>Время в игре</span></div></div><div class="panel"><h2 style="font:21px var(--serif);font-weight:400;margin:0 0 16px">Ваши растения</h2>${state.owned
+            .map((id) => {
+              const s = speciesById(id),
+                p = state.plants[id],
+                level = p.level;
+              return `<div class="settings-row"><span>${s.name}<small>${s.rarity} · уровень ${level}</small></span><span class="gold">${level === MAX_LEVEL ? "МАКСИМУМ" : `${p.xp} / ${xpNeeded(level)} XP`}</span></div>`;
+            })
+            .join("")}</div>`;
+        }
+        function settingsPage() {
+          return `<div class="eyebrow">Ваше пространство, ваши правила</div><h1 class="heading">Настройки</h1><p class="subheading">Настройки хранятся на этом устройстве вместе с игровым прогрессом.</p><div class="panel" style="margin-top:20px"><label class="settings-row"><span>Уменьшить анимации<small>Подходит для слабых устройств и чувствительности к движению.</small></span><input class="switch" type="checkbox" data-setting="reducedMotion" ${state.settings.reducedMotion ? "checked" : ""}></label><label class="settings-row"><span>Компактный вид<small>Сделать карточки растений ниже.</small></span><input class="switch" type="checkbox" data-setting="compact" ${state.settings.compact ? "checked" : ""}></label><div class="settings-row"><span>Локальное сохранение<small>Игра хранится только в этом браузере. Синхронизация между устройствами не подключена.</small></span><span class="gold">АКТИВНО</span></div><div class="settings-actions"><button class="btn" data-action="export">Скачать резервную копию</button><label class="btn">Загрузить сохранение<input type="file" accept="application/json" data-import style="display:none"></label></div></div><div class="panel" style="margin-top:14px"><h2 style="font:20px var(--serif);font-weight:400;margin:0 0 6px">Начать заново</h2><p style="font-size:11px;color:var(--muted);margin:0 0 13px">Удалит сохранённый сад на этом устройстве. Экспортируйте копию, если хотите сохранить прогресс.</p><button class="btn" data-action="reset">Сбросить прогресс</button></div>`;
+        }
+        function pageContent() {
+          switch (currentPage) {
+            case "collection":
+              return collectionPage();
+            case "shop":
+              return shopPage();
+            case "quests":
+              return questsPage();
+            case "achievements":
+              return achievementsPage();
+            case "stats":
+              return statsPage();
+            case "settings":
+              return settingsPage();
+            default:
+              return gardenPage();
+          }
+        }
+        function render() {
+          document.body.classList.toggle(
+            "reduced-motion",
+            state.settings.reducedMotion,
+          );
+          document.body.classList.toggle("compact", state.settings.compact);
+          if (!document.querySelector(".main")) {
+            app.innerHTML = appShell();
+          } else {
+            document.querySelector("#content").innerHTML = pageContent();
+            document.querySelector(".page-title").textContent =
+              navItems().find((item) => item[0] === currentPage)?.[2] ||
+              "Мой сад";
+            document
+              .querySelectorAll(".nav [data-page], .mobile-nav [data-page]")
+              .forEach((button) => {
+                button.classList.toggle(
+                  "active",
+                  button.dataset.page === currentPage,
+                );
+              });
+          }
+          if (state.settings.compact)
+            document
+              .querySelectorAll("#content .plant-art")
+              .forEach((el) => (el.style.height = "135px"));
+          if (
+            matchMedia("(max-width: 700px)").matches &&
+            document.querySelector(".mobile-nav button.active")
+          )
+            document
+              .querySelector(".mobile-nav button.active")
+              .scrollIntoView({
+                block: "nearest",
+                inline: "center",
+                behavior: state.settings.reducedMotion ? "auto" : "smooth",
+              });
+        }
+        function updatePlantCard(id) {
+          const card = [...document.querySelectorAll("[data-plant-card]")].find(
+            (element) => element.dataset.plantCard === id,
+          );
+          if (!card) return;
+          const template = document.createElement("template");
+          template.innerHTML = plantCard(id);
+          const updated = template.content.firstElementChild;
+          card.className = updated.className;
+          card.querySelector(".plant-art").className =
+            updated.querySelector(".plant-art").className;
+          card.querySelector(".plant-art").innerHTML =
+            updated.querySelector(".plant-art").innerHTML;
+          card.querySelector(".plant-info").innerHTML =
+            updated.querySelector(".plant-info").innerHTML;
+        }
+        function updateTopbar() {
+          const level = document.querySelector(".level-chip strong");
+          const levelProgress = document.querySelector(".mini-progress i");
+          const coins = document.querySelector(".top-stats .stat-chip:nth-child(2) strong");
+          if (!level || !levelProgress || !coins) return;
+          const xpPct = Math.min(
+            100,
+            (state.accountXp / accountXpNeeded(state.accountLevel)) * 100,
+          );
+          level.textContent = `Ур. ${state.accountLevel}`;
+          levelProgress.style.width = `${xpPct}%`;
+          coins.textContent = formatCoins(state.coins);
+        }
+        function replaceSectionsFromMarkup(markup, selectors) {
+          const template = document.createElement("template");
+          template.innerHTML = markup;
+          for (const selector of selectors) {
+            const current = document.querySelector(selector);
+            const replacement = template.content.querySelector(selector);
+            if (current && replacement) current.replaceWith(replacement.cloneNode(true));
+          }
+        }
+        function refreshShopView() {
+          if (currentPage !== "shop") return;
+          updateTopbar();
+          replaceSectionsFromMarkup(shopPage(), [
+            ".shop-categories",
+            ".shop-results-head",
+            ".shop-grid",
+          ]);
+        }
+        function refreshCollectionPlantUI(id) {
+          const grid = document.querySelector(".catalog-grid");
+          if (!grid) return;
+          const existing = grid.querySelector(`[data-species-card="${id}"]`);
+          const template = document.createElement("template");
+          template.innerHTML = collectionPage();
+          const updated = template.content.querySelector(
+            `[data-species-card="${id}"]`,
+          );
+          if (existing && updated) existing.replaceWith(updated);
+          else if (existing) existing.remove();
+          const replacementGrid = template.content.querySelector(".catalog-grid");
+          const visibleCards = replacementGrid?.querySelectorAll(
+            "[data-species-card]",
+          ).length;
+          if (visibleCards === 0)
+            grid.innerHTML = '<div class="empty-state">По этим фильтрам растений нет.</div>';
+          document.querySelector(".collection-open-count").textContent =
+            `${ownedSpeciesCount()} из ${SPECIES.length} открыто`;
+        }
+        function refreshShopPlantUI(id) {
+          updateTopbar();
+          const card = document.querySelector(`[data-shop-plant="${id}"]`);
+          card?.remove();
+          const remaining = SPECIES.filter(
+            (species) => !species.starter && !state.owned.includes(species.id),
+          ).length;
+          const count = document.querySelector(
+            '[data-shop-category="plants"] .shop-category-count',
+          );
+          if (count) count.textContent = remaining;
+          const grid = document.querySelector(".shop-grid");
+          if (shopCategory === "plants" && grid && remaining === 0)
+            grid.innerHTML =
+              '<div class="empty-state">Все растения уже в вашей коллекции.</div>';
+          const resultCoins = document.querySelector(".shop-results-head .gold");
+          if (resultCoins) resultCoins.textContent = `${formatCoins(state.coins)} ✦`;
+          refreshShopStateUI();
+        }
+        function refreshShopStateUI() {
+          if (currentPage !== "shop") return;
+          updateTopbar();
+          const resultCoins = document.querySelector(".shop-results-head .gold");
+          if (resultCoins) resultCoins.textContent = `${formatCoins(state.coins)} ✦`;
+          document.querySelectorAll("[data-shop-plant]").forEach((card) => {
+            const species = speciesById(card.dataset.shopPlant);
+            const button = card.querySelector('[data-action="unlock"]');
+            if (!species || !button) return;
+            const canOpen = canUnlock(species);
+            button.disabled = !canOpen;
+            button.classList.toggle("btn-primary", canOpen);
+          });
+          document
+            .querySelectorAll("[data-fertilizer-card]")
+            .forEach((card) => {
+              const fertilizer = FERTILIZERS.find(
+                (item) => item.id === card.dataset.fertilizerCard,
+              );
+              const button = card.querySelector(
+                '[data-action="buy-fertilizer"]',
+              );
+              if (!fertilizer || !button) return;
+              const unlocked = state.accountLevel >= fertilizer.level;
+              card.classList.toggle("locked", !unlocked);
+              button.disabled = !unlocked;
+              button.classList.toggle("btn-primary", unlocked);
+              button.textContent = unlocked
+                ? "Купить выбранное количество"
+                : `Откроется на ур. ${fertilizer.level}`;
+            });
+        }
+        function refreshCollectionCards() {
+          const grid = document.querySelector(".catalog-grid");
+          if (!grid) return;
+          const template = document.createElement("template");
+          template.innerHTML = collectionPage();
+          grid.querySelectorAll("[data-species-card]").forEach((card) => {
+            const updated = template.content.querySelector(
+              `[data-species-card="${card.dataset.speciesCard}"]`,
+            );
+            if (updated) card.replaceWith(updated);
+          });
+        }
+        function refreshPotPurchaseUI(id) {
+          updateTopbar();
+          const potIds = [id, state.equippedPot];
+          for (const potId of new Set(potIds)) {
+            const card = document.querySelector(`[data-pot-card="${potId}"]`);
+            const pot = POTS.find((item) => item.id === potId);
+            if (!card || !pot) continue;
+            const owned = state.unlockedPots.includes(pot.id);
+            const equipped = state.equippedPot === pot.id;
+            const label = card.querySelector(".coin-cost");
+            const button = card.querySelector('[data-action="pot"]');
+            if (label)
+              label.textContent = equipped
+                ? "ИСПОЛЬЗУЕТСЯ"
+                : owned
+                  ? "ОТКРЫТО"
+                  : `${formatCoins(pot.cost)} ✦`;
+            if (button) {
+              button.disabled = equipped;
+              button.classList.toggle("btn-primary", !equipped);
+              button.textContent = equipped ? "Выбрано" : owned ? "Выбрать" : "Купить";
+            }
+          }
+          const remaining = POTS.filter(
+            (pot) => !state.unlockedPots.includes(pot.id),
+          ).length;
+          const count = document.querySelector(
+            '[data-shop-category="pots"] .shop-category-count',
+          );
+          if (count) count.textContent = remaining;
+          const resultCoins = document.querySelector(".shop-results-head .gold");
+          if (resultCoins) resultCoins.textContent = `${formatCoins(state.coins)} ✦`;
+          if (currentPage === "garden")
+            state.owned.forEach(updatePlantCard);
+        }
+        function refreshGardenUI() {
+          const values = {
+            "[data-garden-plants]": ownedSpeciesCount(),
+            "[data-garden-waters]": state.stats.waters,
+            "[data-garden-streak]": state.streak,
+            "[data-garden-account-level]": `Ур. ${state.accountLevel}`,
+            "[data-garden-account-xp]": `${state.accountXp} XP`,
+            "[data-garden-account-next]":
+              `${accountXpNeeded(state.accountLevel)} XP до уровня ${state.accountLevel + 1}`,
+          };
+          for (const [selector, value] of Object.entries(values)) {
+            const element = document.querySelector(selector);
+            if (element) element.textContent = String(value);
+          }
+          const progress = document.querySelector(
+            "[data-garden-account-progress]",
+          );
+          if (progress)
+            progress.style.width = `${Math.min(
+              100,
+              (state.accountXp / accountXpNeeded(state.accountLevel)) * 100,
+            )}%`;
+        }
+        function refreshTaskCards() {
+          const grid = document.querySelector(".task-grid");
+          if (!grid) return;
+          const template = document.createElement("template");
+          template.innerHTML = questsPage();
+          grid.querySelectorAll("[data-task-card]").forEach((card) => {
+            const updated = template.content.querySelector(
+              `[data-task-card="${card.dataset.taskCard}"]`,
+            );
+            if (
+              updated &&
+              (updated.className !== card.className ||
+                updated.innerHTML !== card.innerHTML)
+            )
+              card.replaceWith(updated);
+          });
+        }
+        function refreshAchievementPage() {
+          const template = document.createElement("template");
+          template.innerHTML = achievementsPage();
+          const grid = document.querySelector(".achievement-grid");
+          if (grid) {
+            grid.querySelectorAll("[data-achievement-card]").forEach((card) => {
+              const updated = template.content.querySelector(
+                `[data-achievement-card="${card.dataset.achievementCard}"]`,
+              );
+              if (
+                updated &&
+                (updated.className !== card.className ||
+                  updated.innerHTML !== card.innerHTML)
+              )
+                card.replaceWith(updated);
+            });
+          }
+          for (const selector of [
+            "[data-achievement-total]",
+            "[data-achievement-pending]",
+            "[data-achievement-coins]",
+            "[data-achievement-maxed]",
+          ]) {
+            const current = document.querySelector(selector);
+            const updated = template.content.querySelector(selector);
+            if (current && updated) current.textContent = updated.textContent;
+          }
+        }
+        function refreshCurrentPage() {
+          updateTopbar();
+          switch (currentPage) {
+            case "garden":
+              refreshGardenUI();
+              break;
+            case "collection":
+              refreshCollectionCards();
+              break;
+            case "shop":
+              refreshShopStateUI();
+              break;
+            case "quests":
+              refreshTaskCards();
+              break;
+            case "achievements":
+              refreshAchievementPage();
+              break;
+          }
+        }
+        function navigate(page) {
+          if (!navItems().some((n) => n[0] === page)) return;
+          currentPage = page;
+          render();
+        }
+        function handleAction(action, id, value) {
+          switch (action) {
+            case "water":
+              startWatering(id);
+              break;
+            case "unlock":
+              unlockPlant(id);
+              break;
+            case "daily":
+              unlockDailyReward();
+              break;
+            case "claim-task":
+              claimTask(id);
+              break;
+            case "claim-achievement":
+              claimAchievement(id);
+              break;
+            case "pot":
+              buyPot(id);
+              break;
+            case "buy-fertilizer":
+              buyFertilizer(id, value);
+              break;
+            case "fertilize":
+              applyFertilizer(id, value);
+              break;
+            case "export": {
+              flushPlayTime();
+              const blob = new Blob([JSON.stringify(state, null, 2)], {
+                  type: "application/json",
+                }),
+                url = URL.createObjectURL(blob),
+                a = document.createElement("a");
+              a.href = url;
+              a.download = "garden-empire-save.json";
+              a.click();
+              URL.revokeObjectURL(url);
+              toast("Резервная копия готова");
+              break;
+            }
+            case "reset":
+              if (
+                confirm(
+                  "Удалить весь прогресс Garden Empire на этом устройстве? Это действие нельзя отменить.",
+                )
+              ) {
+                localStorage.removeItem(SAVE_KEY);
+                state = freshState();
+                ensureDaily();
+                playSessionStartedAt =
+                  document.visibilityState === "visible" ? Date.now() : null;
+                save();
+                currentPage = "garden";
+                render();
+                toast("Создан новый сад");
+              }
+              break;
+          }
+        }
+        app.addEventListener("click", (event) => {
+          const category = event.target.closest("[data-shop-category]");
+          if (category) {
+            shopCategory = category.dataset.shopCategory;
+            refreshShopView();
+            return;
+          }
+          const fertilizerOption = event.target.closest(
+            "[data-fertilizer-option]",
+          );
+          if (fertilizerOption) {
+            const options = fertilizerOption
+              .closest(".fertilizer-options")
+              .querySelectorAll("[data-fertilizer-option]");
+            options.forEach((option) =>
+              option.setAttribute(
+                "aria-pressed",
+                String(option === fertilizerOption),
+              ),
+            );
+            return;
+          }
+          const target = event.target.closest("[data-page],[data-action]");
+          if (!target) return;
+          if (target.dataset.page) {
+            navigate(target.dataset.page);
+            return;
+          }
+          let value;
+          if (target.dataset.action === "fertilize") {
+            value = target
+              .closest("[data-plant-card]")
+              ?.querySelector(
+                '[data-fertilizer-option][aria-pressed="true"]',
+              )?.dataset.fertilizerOption;
+          } else if (target.dataset.action === "buy-fertilizer") {
+            value = target.closest(".shop-card")?.querySelector(
+              "[data-fertilizer-quantity]",
+            )?.value;
+          }
+          handleAction(target.dataset.action, target.dataset.id, value);
+        });
+        app.addEventListener("change", (event) => {
+          const t = event.target;
+          if (t.matches("#rarity-filter")) {
+            filterRarity = t.value;
+            replaceSectionsFromMarkup(collectionPage(), [
+              ".collection-filters",
+              ".catalog-grid",
+            ]);
+          } else if (t.matches("#status-filter")) {
+            filterStatus = t.value;
+            replaceSectionsFromMarkup(collectionPage(), [
+              ".collection-filters",
+              ".catalog-grid",
+            ]);
+          } else if (t.matches("#level-filter")) {
+            filterLevel = t.value;
+            replaceSectionsFromMarkup(collectionPage(), [
+              ".collection-filters",
+              ".catalog-grid",
+            ]);
+          } else if (t.matches("[data-setting]")) {
+            state.settings[t.dataset.setting] = t.checked;
+            save();
+            document.body.classList.toggle(
+              "reduced-motion",
+              state.settings.reducedMotion,
+            );
+            document.body.classList.toggle("compact", state.settings.compact);
+          } else if (t.matches("[data-import]")) {
+            const file = t.files?.[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = () => {
+              try {
+                const parsed = JSON.parse(String(reader.result));
+                if (
+                  !parsed ||
+                  parsed.version !== 1 ||
+                  !parsed.plants ||
+                  !Array.isArray(parsed.owned)
+                )
+                  throw new Error(
+                    "Файл не является сохранением Garden Empire.",
+                  );
+                state = normalizeState(parsed);
+                playSessionStartedAt =
+                  document.visibilityState === "visible" ? Date.now() : null;
+                ensureDaily();
+                save();
+                render();
+                toast("Сохранение загружено");
+              } catch (error) {
+                console.error("Не удалось импортировать сохранение:", error);
+                toast("Не удалось загрузить файл", error.message);
+              }
+            };
+            reader.onerror = () =>
+              toast(
+                "Не удалось прочитать файл",
+                "Попробуйте выбрать файл ещё раз.",
+              );
+            reader.readAsText(file);
+          }
+        });
+        app.addEventListener("input", (event) => {
+          const target = event.target;
+          if (target.matches("[data-fertilizer-quantity]")) {
+            updateFertilizerQuantity(target);
+          }
+        });
+        state = loadState();
+        ensureDaily();
+        settleWatering();
+        checkAchievements();
+        save();
+        render();
+        if (document.visibilityState === "visible")
+          playSessionStartedAt = Date.now();
+        document.addEventListener("visibilitychange", () => {
+          if (document.visibilityState === "hidden") {
+            flushPlayTime();
+            playSessionStartedAt = null;
+          } else if (playSessionStartedAt === null)
+            playSessionStartedAt = Date.now();
+        });
+        window.addEventListener("pagehide", () => {
+          flushPlayTime();
+          playSessionStartedAt = null;
+          save();
+        });
+        window.addEventListener("beforeunload", () => {
+          flushPlayTime();
+          playSessionStartedAt = null;
+          save();
+        });
+        let lastPeriodicSave = Date.now();
+        setInterval(() => {
+          const now = Date.now(),
+            changed = settleWatering();
+          if (changed) {
+            lastPeriodicSave = now;
+          }
+          document.querySelectorAll(".countdown").forEach((el) => {
+            const remaining = Math.max(
+              0,
+              Math.ceil((Number(el.dataset.end) - now) / 1000),
+            );
+            el.textContent = fmtTime(remaining);
+          });
+          if (
+            playSessionStartedAt !== null &&
+            now - lastPeriodicSave >= 15000
+          ) {
+            flushPlayTime();
+            lastPeriodicSave = now;
+          }
+          document
+            .querySelectorAll(".playtime-value")
+            .forEach(
+              (el) => (el.textContent = formatPlayTime(currentPlayTime())),
+            );
+        }, 1000);
+      })();
+    </script>
+  </body>
+</html>
