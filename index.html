@@ -2657,7 +2657,7 @@
         let state,
           playSessionStartedAt = null;
         let currentPage = "garden",
-          shopCategory = "plants",
+          shopCategory = "pots",
           filterRarity = "Все редкости",
           filterStatus = "Все",
           filterLevel = "Любой уровень",
@@ -3036,8 +3036,6 @@
           if (currentPage === "collection") {
             refreshCollectionPlantUI(id);
             updateTopbar();
-          } else if (currentPage === "shop") {
-            refreshShopPlantUI(id);
           } else {
             refreshCurrentPage();
           }
@@ -3517,15 +3515,6 @@
           }</div>`;
         }
         function shopPage() {
-          const plants = SPECIES.filter(
-            (s) => !s.starter && !state.owned.includes(s.id),
-          );
-          const plantCards = plants
-            .map((s) => {
-              const ok = canUnlock(s);
-              return `<article class="shop-card" data-shop-plant="${s.id}"><div class="shop-symbol" style="color:${s.color}">${s.shape === "sakura" ? "✿" : s.shape === "cactus" ? "♟" : "❋"}</div><h3>${s.name}</h3><p>${s.rarity} · ${s.desc} Требование: ${requirementText(s)}.</p><div class="shop-meta"><span class="coin-cost">${formatCoins(s.cost)} ✦</span><button class="btn ${ok ? "btn-primary" : ""} btn-small" data-action="unlock" data-id="${s.id}" ${ok ? "" : "disabled"}>Открыть</button></div></article>`;
-            })
-            .join("");
           const potCards = POTS.map((p) => {
             const owned = state.unlockedPots.includes(p.id);
             const equipped = state.equippedPot === p.id;
@@ -3541,17 +3530,6 @@
             0,
           );
           const categories = [
-            {
-              id: "plants",
-              icon: "♧",
-              title: "Растения",
-              detail: "Новые виды и редкости",
-              count: plants.length,
-              heading: "Растения",
-              copy: "Открывайте новые виды по мере развития сада.",
-              cards: plantCards,
-              empty: "Все растения уже в вашей коллекции.",
-            },
             {
               id: "pots",
               icon: "◒",
@@ -3574,8 +3552,7 @@
               cards: fertilizerCards,
             },
           ];
-          const selected =
-            categories.find((c) => c.id === shopCategory) || categories[0];
+          const selected = categories.find((c) => c.id === shopCategory) || categories[0];
           const resultCards =
             selected.cards ||
             `<div class="empty-state">${selected.empty || "Все доступные предметы уже открыты."}</div>`;
@@ -3778,38 +3755,11 @@
           document.querySelector(".collection-open-count").textContent =
             `${ownedSpeciesCount()} из ${SPECIES.length} открыто`;
         }
-        function refreshShopPlantUI(id) {
-          updateTopbar();
-          const card = document.querySelector(`[data-shop-plant="${id}"]`);
-          card?.remove();
-          const remaining = SPECIES.filter(
-            (species) => !species.starter && !state.owned.includes(species.id),
-          ).length;
-          const count = document.querySelector(
-            '[data-shop-category="plants"] .shop-category-count',
-          );
-          if (count) count.textContent = remaining;
-          const grid = document.querySelector(".shop-grid");
-          if (shopCategory === "plants" && grid && remaining === 0)
-            grid.innerHTML =
-              '<div class="empty-state">Все растения уже в вашей коллекции.</div>';
-          const resultCoins = document.querySelector(".shop-results-head .gold");
-          if (resultCoins) resultCoins.textContent = `${formatCoins(state.coins)} ✦`;
-          refreshShopStateUI();
-        }
         function refreshShopStateUI() {
           if (currentPage !== "shop") return;
           updateTopbar();
           const resultCoins = document.querySelector(".shop-results-head .gold");
           if (resultCoins) resultCoins.textContent = `${formatCoins(state.coins)} ✦`;
-          document.querySelectorAll("[data-shop-plant]").forEach((card) => {
-            const species = speciesById(card.dataset.shopPlant);
-            const button = card.querySelector('[data-action="unlock"]');
-            if (!species || !button) return;
-            const canOpen = canUnlock(species);
-            button.disabled = !canOpen;
-            button.classList.toggle("btn-primary", canOpen);
-          });
           document
             .querySelectorAll("[data-fertilizer-card]")
             .forEach((card) => {
